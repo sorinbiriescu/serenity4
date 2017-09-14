@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from serenity4 import app, db, login_manager, JOBS_PER_PAGE
-
 from sqlalchemy import desc, and_
 from flask_login import UserMixin, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+
+from serenity4 import app, db, login_manager, JOBS_PER_PAGE
 
 manager = Manager(app)
 migrate = Migrate(app, db)
