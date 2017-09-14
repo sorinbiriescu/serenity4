@@ -18,16 +18,19 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
     <!-- MetisMenu CSS -->
-    <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
-
+    <!-- <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/metisMenu/metisMenu.min.css') }}">
     <!-- Custom CSS -->
-    <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet">
+    <!-- <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/sb-admin-2.css') }}">
 
     <!-- Morris Charts CSS -->
-    <link href="../static/vendor/morrisjs/morris.css" rel="stylesheet">
+    <!-- <link href="../static/vendor/morrisjs/morris.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/morrisjs/morris.css') }}">
 
     <!-- Custom Fonts -->
-    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!-- <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/font-awesome/css/font-awesome.min.css') }}">
 
  </head>
 
@@ -112,21 +115,32 @@
 
 
     <!-- jQuery -->
-    <script src="../static/vendor/jquery/jquery.min.js"></script>
+    <!-- <script src="../static/vendor/jquery/jquery.min.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}">
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- <script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}">
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- <script src="../static/vendor/metisMenu/metisMenu.min.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/metisMenu/metisMenu.min.js') }}">
 
     <!-- Morris Charts JavaScript -->
-    <script src="../static/vendor/raphael/raphael.min.js"></script>
-    <script src="../static/vendor/morrisjs/morris.min.js"></script>
-    <script src="../static/data/morris-data.js"></script>
+    <!-- <script src="../static/vendor/raphael/raphael.min.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/raphael/raphael.min.js') }}">
+
+    <!-- <script src="../static/vendor/morrisjs/morris.min.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/morrisjs/morris.min.js') }}">
+
+    <!-- <script src="../static/data/morris-data.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='data/morris-data.js') }}">
+
 
     <!-- Custom Theme JavaScript -->
-    <script src="../static/dist/js/sb-admin-2.js"></script>
+    <!-- <script src="../static/dist/js/sb-admin-2.js"></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/js/sb-admin-2.js') }}">
+
 
 	</body>
 </html>
