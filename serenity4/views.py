@@ -1,10 +1,10 @@
-from serenity4 import app, db, login_manager
-
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, login_required, logout_user
 
-from models import Jobs,User,UserJobStatus
-from forms import FilterSearch, SignupForm, LoginForm
+from serenity4.models import Jobs,User,UserJobStatus
+from serenity4.forms import FilterSearch, SignupForm, LoginForm
+
+from serenity4 import app, db, login_manager
 
 @app.route('/')
 @app.route('/index')
