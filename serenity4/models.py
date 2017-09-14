@@ -59,7 +59,7 @@ class User(db.Model, UserMixin):
     search_terms = db.Column(db.String(180))
     search_terms_excluded = db.Column(db.String(180))
     websites_parsers = db.Column(db.String(180))
-    job_status = db.relationship("UserJobStatus", uselist=False, backref="user")
+    job_status = db.relationship("UserJobStatus", backref="user", lazy='dynamic')
 
 
     def __init__(self, name,username,email,password):
