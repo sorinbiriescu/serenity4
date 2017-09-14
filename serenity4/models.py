@@ -132,6 +132,9 @@ class UserJobStatus(db.Model):
             self.job_id = job_id
             self.status = status
 
+    def __repr__(self):
+        return "{}".format(self.status)
+
     @staticmethod
     def change_status(job_id ,status):
         logged_user = User.get_id_by_username(current_user)

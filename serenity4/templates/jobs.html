@@ -58,7 +58,7 @@ Serenity2 -- Jobs
 			<table class="table">
 				<thead>
 				<tr>
-					<th class="table_header">*</th>
+          <th class="table_header">*</th>
 					<th class="table_header">No.</th>
 					<th class="table_header">Title</th>
 					<th class="table_header">Company</th>
@@ -74,16 +74,16 @@ Serenity2 -- Jobs
 				<tbody>
 				{% if jobs %}
 					{% for job in jobs.items %}
-					{% if job.status.status == "Not Interested" %}
+					{% if job.status.first()|string() == "Not Interested" %}
 						<tr class="danger">
-					{% elif job.status.status == "Interested" %}
+					{% elif job.status.first()|string() == 'Interested' %}
 						<tr class="info">
-					{% elif job.status.status == "Applied" %}
+					{% elif job.status.first()|string() == 'Applied' %}
 						<tr class="success">
 					{% else %}
 						<tr>
 					{% endif %}
-							<td><input type="checkbox" name="table_row_checkbox" value="{{job.id}}"></td>
+              <td><input type="checkbox" name="table_row_checkbox" value="{{job.id}}"></td>
 							<td>{{ job.id }}</td>
 							<td>{{ job.title }}</td>
 							<td>{{ job.company }}</td>
