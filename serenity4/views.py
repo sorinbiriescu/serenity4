@@ -26,7 +26,10 @@ def jobs(page=1):
             return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
         else:
             if form.table_item_action.data == 'Clear status':
-                UserJobStatus.clear_status(request.form.getlist("table_row_checkbox"))
+                try:
+                    UserJobStatus.clear_status(request.form.getlist("table_row_checkbox"))
+                except:
+                    pass
                 return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
             else:
                 try:
