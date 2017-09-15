@@ -42,7 +42,11 @@ class Jobs(db.Model):
     @staticmethod
     def get_jobs_not_interested(search_term_filter,page):
         if search_term_filter == 'All':
-            return Jobs.query.join(UserJobStatus).filter(UserJobStatus.status == "Not Interested").order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
+            return Jobs.query \
+                        .join(UserJobStatus) \
+                        .filter(UserJobStatus.status == "Not Interested") \
+                        .order_by(desc(Jobs.date_first_added)) \
+                        .paginate(page, JOBS_PER_PAGE, False)
         else:
             return Jobs.query.join(UserJobStatus).filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Not Interested")).order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
 

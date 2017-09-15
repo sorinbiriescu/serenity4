@@ -49,7 +49,7 @@ def jobs(page=1):
 def jobs_not_interested(page=1):
     form = FilterSearch()
     if request.method == 'POST':
-        jobs = Jobs.get_jobs_filtered(form.search_term.data,page)
+        jobs = Jobs.get_jobs_not_interested(form.search_term.data,page)
         if request.form['submit'] == 'Filter':
             return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
         else:
