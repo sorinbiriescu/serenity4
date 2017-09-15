@@ -58,9 +58,9 @@ Serenity2 -- Jobs
 			<table class="table">
 				<thead>
 				<tr>
-          <th class="table_header">Tester</th>
+          <!-- <th class="table_header">Tester</th>
+          <th class="table_header">No.</th> -->
           <th class="table_header">*</th>
-					<th class="table_header">No.</th>
 					<th class="table_header">Title</th>
 					<th class="table_header">Company</th>
 					<th class="table_header">Location</th>
@@ -84,9 +84,9 @@ Serenity2 -- Jobs
 					{% else %}
 						<tr>
 					{% endif %}
-              <td>{{ job.status.first() }}</td>
+              <!-- <td>{{ job.status.first() }}</td>
+              <td>{{ job.id }}</td> -->
               <td><input type="checkbox" name="table_row_checkbox" value="{{job.id}}"></td>
-							<td>{{ job.id }}</td>
 							<td>{{ job.title }}</td>
 							<td>{{ job.company }}</td>
 							<td>{{ job.location }}</td>
