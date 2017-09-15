@@ -40,6 +40,14 @@ class Jobs(db.Model):
             return Jobs.query.filter(Jobs.search_term == search_term_filter).order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
+    def get_jobs_not_interested(search_term_filter,page):
+        if search_term_filter == 'All':
+            return Jobs.query.join(UserJobStatus).filter(UserJobStatus.status == "Not Interested").order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
+        else:
+            return Jobs.query.join(UserJobStatus).filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Not Interested")).order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
+
+
+    @staticmethod
     def get_unique_search_terms():
         return Jobs.query.with_entities(Jobs.search_term).distinct().order_by('search_term')
 

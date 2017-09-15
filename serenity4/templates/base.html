@@ -89,18 +89,21 @@
 							</a>
 						</li>
 
-                        <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Jobs <span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="{{ url_for('jobs') }}">All jobs</a>
-                                </li>
-                                <li>
-                                    <a href="#">Applied jobs</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
+            <li>
+                <a href="#"><i class="fa fa-files-o fa-fw"></i> Jobs <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="{{ url_for('jobs') }}">All jobs</a>
+                    </li>
+                    <li>
+                        <a href="#">Applied jobs</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('jobs_not_interested') }}">Jobs not interested</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

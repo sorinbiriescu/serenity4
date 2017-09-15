@@ -43,6 +43,34 @@ def jobs(page=1):
         jobs = Jobs.get_jobs_filtered("All",page)
         return render_template('jobs.html', jobs = jobs, filter_text = "All", form=form)
 
+@app.route('/jobs_not_interested', methods=['GET', 'POST'])
+@app.route('/jobs_not_interested/<int:page>', methods=['GET', 'POST'])
+@login_required
+def jobs_not_interested(page=1):
+    form = FilterSearch()
+    if request.method == 'POST':
+        jobs = Jobs.get_jobs_filtered(form.search_term.data,page)
+        if request.form['submit'] == 'Filter':
+            return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
+        else:
+            if form.table_item_action.data == 'Clear status':
+                try:
+                    UserJobStatus.clear_status(request.form.getlist("table_row_checkbox"))
+                except:
+                    pass
+                return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
+            else:
+                try:
+                    UserJobStatus.clear_status(request.form.getlist("table_row_checkbox"))
+                except:
+                    pass
+                UserJobStatus.change_status(request.form.getlist("table_row_checkbox"), form.table_item_action.data)
+                return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
+
+    else:
+        jobs = Jobs.get_jobs_not_interested("All",page)
+        return render_template('jobs.html', jobs = jobs, filter_text = "All", form=form)
+
 @app.route('/user/<username>')
 @login_required
 def user(username):
