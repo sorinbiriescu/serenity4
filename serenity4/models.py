@@ -56,7 +56,8 @@ class Jobs(db.Model):
         else:
             return Jobs.query \
                         .join(UserJobStatus) \
-                        .filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Not Interested")) \
+                        .filter(and_(Jobs.search_term == search_term_filter, \
+                                     UserJobStatus.status == "Not Interested")) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
@@ -71,7 +72,8 @@ class Jobs(db.Model):
         else:
             return Jobs.query \
                         .join(UserJobStatus) \
-                        .filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Interested")) \
+                        .filter(and_(Jobs.search_term == search_term_filter, \
+                                     UserJobStatus.status == "Interested")) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
@@ -86,7 +88,8 @@ class Jobs(db.Model):
         else:
             return Jobs.query \
                         .join(UserJobStatus) \
-                        .filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Applied")) \
+                        .filter(and_(Jobs.search_term == search_term_filter, \
+                                     UserJobStatus.status == "Applied")) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
