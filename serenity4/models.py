@@ -30,14 +30,20 @@ class Jobs(db.Model):
 
     @staticmethod
     def get_jobs_all():
-        return Jobs.query.order_by(desc(Jobs.date_first_added))
+        return Jobs.query \
+                    .order_by(desc(Jobs.date_first_added))
 
     @staticmethod
     def get_jobs_filtered(search_term_filter,page):
         if search_term_filter == 'All':
-            return Jobs.query.order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
+            return Jobs.query \
+                        .order_by(desc(Jobs.date_first_added)) \
+                        .paginate(page, JOBS_PER_PAGE, False)
         else:
-            return Jobs.query.filter(Jobs.search_term == search_term_filter).order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
+            return Jobs.query \
+                        .filter(Jobs.search_term == search_term_filter) \
+                        .order_by(desc(Jobs.date_first_added)) \
+                        .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
     def get_jobs_not_interested(search_term_filter,page):
@@ -48,12 +54,19 @@ class Jobs(db.Model):
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
         else:
-            return Jobs.query.join(UserJobStatus).filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Not Interested")).order_by(desc(Jobs.date_first_added)).paginate(page, JOBS_PER_PAGE, False)
+            return Jobs.query \
+                        .join(UserJobStatus) \
+                        .filter(and_(Jobs.search_term == search_term_filter,UserJobStatus.status == "Not Interested")) \
+                        .order_by(desc(Jobs.date_first_added)) \
+                        .paginate(page, JOBS_PER_PAGE, False)
 
 
     @staticmethod
     def get_unique_search_terms():
-        return Jobs.query.with_entities(Jobs.search_term).distinct().order_by('search_term')
+        return Jobs.query \
+                    .with_entities(Jobs.search_term) \
+                    .distinct() \
+                    .order_by('search_term')
 
     @staticmethod
     def get_search_term_choices():
@@ -97,12 +110,16 @@ class User(db.Model, UserMixin):
 
     @staticmethod
     def get_by_username(username):
-        user = User.query.filter_by(username=str(username)).first()
+        user = User.query \
+                    .filter_by(username=str(username)) \
+                    .first()
         return user
 
     @staticmethod
     def get_id_by_username(username):
-        user = User.query.filter_by(username=str(username)).first()
+        user = User.query \
+                    .filter_by(username=str(username)) \
+                    .first()
         return user.id
 
     @property
@@ -118,7 +135,8 @@ class User(db.Model, UserMixin):
 
     @login_manager.user_loader
     def load_user(userid):
-        return User.query.get(int(userid))
+        return User.query \
+                    .get(int(userid))
 
     @staticmethod
     def add_new_user(name,username,email,password):
@@ -159,7 +177,9 @@ class UserJobStatus(db.Model):
     def clear_status(job_id):
         logged_user = User.get_id_by_username(current_user)
         for job in job_id:
-            status = UserJobStatus.query.filter(and_(UserJobStatus.job_id == job,UserJobStatus.user_id == logged_user)).first()
+            status = UserJobStatus.query \
+                                    .filter(and_(UserJobStatus.job_id == job,UserJobStatus.user_id == logged_user)) \
+                                    .first()
             try:
                 db.session.delete(status)
             except:
