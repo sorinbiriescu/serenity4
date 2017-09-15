@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import desc, and_
+from sqlalchemy import desc, and_, or_
 from flask_login import UserMixin, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_script import Manager
@@ -90,6 +90,23 @@ class Jobs(db.Model):
                         .join(UserJobStatus) \
                         .filter(and_(Jobs.search_term == search_term_filter, \
                                      UserJobStatus.status == "Applied")) \
+                        .order_by(desc(Jobs.date_first_added)) \
+                        .paginate(page, JOBS_PER_PAGE, False)
+
+    @staticmethod
+    def get_jobs_to_check(search_term_filter,page):
+        job_status = [x[0] for x in UserJobStatus.query.with_entities(UserJobStatus.job_id).all()]
+        if search_term_filter == 'All':
+            return Jobs.query \
+                        .outerjoin(UserJobStatus) \
+                        .filter(UserJobStatus.status.is_(None)) \
+                        .order_by(desc(Jobs.date_first_added)) \
+                        .paginate(page, JOBS_PER_PAGE, False)
+        else:
+            return Jobs.query \
+                        .outerjoin(UserJobStatus) \
+                        .filter(and_(Jobs.search_term == search_term_filter, \
+                                     UserJobStatus.status.is_(None))) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 

@@ -127,6 +127,34 @@ def jobs_applied(page=1):
         jobs = Jobs.get_jobs_applied("All",page)
         return render_template('jobs.html', jobs = jobs, filter_text = "All", form=form)
 
+@app.route('/jobs_to_check', methods=['GET', 'POST'])
+@app.route('/jobs_to_check/<int:page>', methods=['GET', 'POST'])
+@login_required
+def jobs_to_check(page=1):
+    form = FilterSearch()
+    if request.method == 'POST':
+        jobs = Jobs.get_jobs_to_check(search_term_filter=form.search_term.data,page=page)
+        if request.form['submit'] == 'Filter':
+            return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
+        else:
+            if form.table_item_action.data == 'Clear status':
+                try:
+                    UserJobStatus.clear_status(request.form.getlist("table_row_checkbox"))
+                except:
+                    pass
+                return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
+            else:
+                try:
+                    UserJobStatus.clear_status(request.form.getlist("table_row_checkbox"))
+                except:
+                    pass
+                UserJobStatus.change_status(request.form.getlist("table_row_checkbox"), form.table_item_action.data)
+                return render_template('jobs.html', jobs = jobs, filter_text = form.search_term.data, form=form)
+
+    else:
+        jobs = Jobs.get_jobs_to_check(search_term_filter="All",page=page)
+        return render_template('jobs.html', jobs = jobs, filter_text = "All", form=form)
+
 
 @app.route('/user/<username>')
 @login_required
