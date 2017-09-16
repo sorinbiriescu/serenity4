@@ -19,3 +19,9 @@ class LoginForm(Form):
     username = StringField('username', validators=[DataRequired()])
     password = PasswordField('password',validators=[DataRequired()])
     submit = SubmitField("Sign In")
+
+class UserProfile(Form):
+    name = StringField('name', validators=[DataRequired()])
+    username = StringField('username', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired(),Email()])
+    password = PasswordField('password',validators=[DataRequired()])

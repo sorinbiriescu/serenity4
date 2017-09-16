@@ -156,9 +156,15 @@ def jobs_to_check(page=1):
         return render_template('jobs.html', jobs = jobs, filter_text = "All", form=form)
 
 
-@app.route('/user/<username>')
+@app.route('/user_dashboard/<username>')
 @login_required
-def user(username):
+def user_dashboard(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user_dashboard.html', user=user)
+
+@app.route('/user_profile/<username>')
+@login_required
+def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user_profile.html', user=user)
 
@@ -184,7 +190,7 @@ def login():
         if user is not None and user.check_password(form.password.data):
             login_user(user)
             #flash("Logged in successfully as {}.".format(user.username))
-            return redirect(request.args.get('next') or url_for('user',
+            return redirect(request.args.get('next') or url_for('user_profile',
                                                 username=user.username))
         #flash('Incorrect username or password.')
     return render_template("login.html", form=form)
