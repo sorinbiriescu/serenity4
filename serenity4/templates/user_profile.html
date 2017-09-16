@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <article>
-        <header>
-             <h1>{{ user.email }}</h1>
+    <form action="" method="post" name="user_job_search_profile">
+        {{ form.hidden_tag() }}
+        <p>{{ user.email }}</p>
+        {% for criteria_item in criteria %}
+            <p>
+                {{ criteria_item.search_criteria }}
+            </p>
+        {% endfor %}
 
-        </header>
+        <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
 
-    </article>
+        <input type="submit" name="submit" value="Add criteria">
+    </form>
 {% endblock %}

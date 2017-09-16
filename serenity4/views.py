@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, login_required, logout_user
 
-from serenity4.models import Jobs,User,UserJobStatus
-from serenity4.forms import FilterSearch, SignupForm, LoginForm
+from serenity4.models import Jobs,User,UserJobStatus, UserJobSearchCriteria
+from serenity4.forms import FilterSearch, SignupForm, LoginForm, UserProfile
 
 from serenity4 import app, db, login_manager
 
@@ -162,11 +162,21 @@ def user_dashboard(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user_dashboard.html', user=user)
 
-@app.route('/user_profile/<username>')
+@app.route('/user_profile/<username>', methods=['GET', 'POST'])
 @login_required
 def user_profile(username):
+    form = UserProfile()
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user_profile.html', user=user)
+    if request.method == 'POST':
+        if request.form['submit'] == 'Add criteria':
+            UserJobSearchCriteria.add_job_search_criteria(form.job_search_criteria.data)
+            criteria = UserJobSearchCriteria.get_job_search_criteria()
+            return render_template('user_profile.html', criteria=criteria, user=user, form=form)
+        else:
+            pass
+    else:
+        criteria = UserJobSearchCriteria.get_job_search_criteria()
+        return render_template('user_profile.html', criteria=criteria, user=user, form=form)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():

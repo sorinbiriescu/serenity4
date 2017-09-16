@@ -131,10 +131,11 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(80))
     password_hash = db.Column(db.String)
-    search_terms = db.Column(db.String(180))
-    search_terms_excluded = db.Column(db.String(180))
-    websites_parsers = db.Column(db.String(180))
-    job_status = db.relationship("UserJobStatus", backref="user", lazy='dynamic')
+    status = db.Column(db.Boolean, default=True)
+    job_status = db.relationship('UserJobStatus', backref='user', lazy='dynamic')
+    search_terms = db.relationship('UserJobSearchCriteria', backref='user', lazy='dynamic')
+    search_location = db.relationship('UserJobSearchLocation', backref='user', lazy='dynamic')
+    search_engines = db.relationship('UserJobSearchEngines', backref='user', lazy='dynamic')
 
 
     def __init__(self, name,username,email,password):
@@ -235,3 +236,55 @@ class UserJobStatus(db.Model):
             except:
                 pass
         db.session.commit()
+
+class UserJobSearchCriteria(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    search_criteria = db.Column(db.String(40))
+    exclude = db.Column(db.Boolean, default=False)
+
+    def __init__(self, user_id, search_criteria,exclude = None):
+            self.user_id = user_id
+            self.search_criteria = search_criteria
+            self.exclude = exclude
+
+    def __repr__(self):
+        return "{%s,%s}".format(self.search_criteria,self.exclude)
+
+    @staticmethod
+    def get_job_search_criteria():
+        logged_user = User.get_id_by_username(current_user)
+        return UserJobSearchCriteria.query \
+                                    .filter(UserJobSearchCriteria.user_id == logged_user) \
+                                    .order_by(UserJobSearchCriteria.search_criteria)
+
+    @staticmethod
+    def add_job_search_criteria(search_criteria, exclude = None):
+        logged_user = User.get_id_by_username(current_user)
+        new_criteria = UserJobSearchCriteria(logged_user,search_criteria,exclude)
+        db.session.add(new_criteria)
+        db.session.commit()
+
+class UserJobSearchLocation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    search_location = db.Column(db.String(40))
+
+    def __init__(self, user_id, search_location):
+            self.user_id = user_id
+            self.search_location = search_criteria
+
+    def __repr__(self):
+        return "{}".format(self.search_criteria)
+
+class UserJobSearchEngines(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    search_engine = db.Column(db.String(40))
+
+    def __init__(self, user_id, search_engine):
+            self.user_id = user_id
+            self.search_engine = search_engine
+
+    def __repr__(self):
+        return "{}".format(self.search_engine)

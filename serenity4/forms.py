@@ -25,3 +25,4 @@ class UserProfile(Form):
     username = StringField('username', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired(),Email()])
     password = PasswordField('password',validators=[DataRequired()])
+    job_search_criteria = StringField('Job search criteria')
