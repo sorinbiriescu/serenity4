@@ -1,0 +1,88 @@
+A site where use logins, sets the jobs he's looking for, chooses the websites where to look and generates a jobs page.
+The jobs page will have options to filter data and set job status to different states.
+Statistics will be shown on the user's profile.
+
+Re-factoring:
+- at user creation, create all separate tables for job storage, job status for each user
+
+****************************************
+*               TO DO                  *
+****************************************
+
+
+
+****************************************************************
+
+Features to implement:
+
+**** Create user profile page:
+    - ability to enter search term, exclude search term, location
+    - tags with delete X button
+    - location with autocomplete
+    - find a way to provide progress report
+    - find a way to show message that the script is still running
+    - test results for search criteria created (need a dummy account ???)
+
+**** Pass to lxml for web parsing:
+    - if duplicate, append search criteria (separate table for it ???)
+    - if duplicate, append source (separate table for it)
+    - add other job sites to the parser
+
+**** Multiple filter option:
+    - source
+    - city
+
+- merge link and source in one field (source that acts as a link)
+- add "Expired" option. After a certain amount of time, mark certain jobs as expired (possible conflict: jobs expired that reappear)
+- number of entries for each category
+- create table with results for each user
+- install a button to fetch results on the jobs page
+
+- create function to drop only the table (will be useful later on when only table needs to be dropped and not the others)
+- if after duplicate removal results are lower than expected, run again with batch
+- check if the application page is a stupid Taleo (or similar crap)
+- encouraging messages
+- statistics
+- report a bug issue
+- signup confirmation not working
+- flash messages
+
+*********************************************************************
+
+//DONE
+
+- drop-down menu with subpages: Jobs, Interested, Not interested, Applied, Expired
+- separate results in pages
+- move filter field to the left of the page
+- remove entries with "Not Interested" as True. Make a separate page for it
+**** user session:
+    - // create user table
+    - //memorize job preference in separate table
+******
+
+**** Remodel interface.
+    - Sidebar with filtered table in the center. Subpages for Interested / Not interested / Applied etc.
+    - First page without sidebar. Sidebar should appear after login
+******
+- //Get template
+- //change locally the template
+- //make backup of onsite template
+- //fix links
+- //show a properly formatted table. Table should be a template. jobs.html page should get data depending on view
+******
+- add only unique jobs to the DB
+- install search term filter
+- add to DB date_applied, applied, expired, not interested
+- add "Applied", "Not interested" and "Interested" option to table. Select rows and update DB. Change style of row depending on validators
+- conflict between the 3 states
+- job status is not persistant
+- keep filter when applying action
+- clear status issue: remove set to False statement in all other statements
+- parser change list to dict. This way it can handle errors
+- save job status to different table
+- set login to username instead of email
+- create counter in DB to count the times a job was found
+- open link in new tab
+- add "assistant events" to the job search
+- format search term before adding to DB
+- show the current filter applied to the search
