@@ -26,6 +26,7 @@ class Jobs(db.Model):
     expired = db.Column(db.Boolean, default=False)
     discovery_count = db.Column(db.Integer, default=0)
     last_date_found = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     status = db.relationship("UserJobStatus", backref="jobs", lazy='dynamic')
 
     @staticmethod
@@ -132,6 +133,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80))
     password_hash = db.Column(db.String)
     status = db.Column(db.Boolean, default=True)
+    job_id = db.relationship('Jobs', backref='user', lazy='dynamic')
     job_status = db.relationship('UserJobStatus', backref='user', lazy='dynamic')
     search_terms = db.relationship('UserJobSearchCriteria', backref='user', lazy='dynamic')
     search_location = db.relationship('UserJobSearchLocation', backref='user', lazy='dynamic')
