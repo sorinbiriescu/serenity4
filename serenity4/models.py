@@ -13,7 +13,11 @@ migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
 
+
 class Jobs(db.Model):
+    '''
+    Jobs Table
+    '''
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     company = db.Column(db.Text)
@@ -31,11 +35,12 @@ class Jobs(db.Model):
 
     @staticmethod
     def get_jobs_all():
+    ''' Queries table Jobs for all entries. '''>
         return Jobs.query \
                     .order_by(desc(Jobs.date_first_added))
 
     @staticmethod
-    def get_jobs_filtered(search_term_filter,page):
+    def get_jobs_filtered(search_term_filter, page):
         if search_term_filter == 'All':
             return Jobs.query \
                         .order_by(desc(Jobs.date_first_added)) \
@@ -47,7 +52,7 @@ class Jobs(db.Model):
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
-    def get_jobs_not_interested(search_term_filter,page):
+    def get_jobs_not_interested(search_term_filter, page):
         if search_term_filter == 'All':
             return Jobs.query \
                         .join(UserJobStatus) \
@@ -63,7 +68,7 @@ class Jobs(db.Model):
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
-    def get_jobs_interested(search_term_filter,page):
+    def get_jobs_interested(search_term_filter, page):
         if search_term_filter == 'All':
             return Jobs.query \
                         .join(UserJobStatus) \
@@ -79,7 +84,7 @@ class Jobs(db.Model):
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
-    def get_jobs_applied(search_term_filter,page):
+    def get_jobs_applied(search_term_filter, page):
         if search_term_filter == 'All':
             return Jobs.query \
                         .join(UserJobStatus) \
@@ -95,8 +100,12 @@ class Jobs(db.Model):
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
-    def get_jobs_to_check(search_term_filter,page):
-        job_status = [x[0] for x in UserJobStatus.query.with_entities(UserJobStatus.job_id).all()]
+    def get_jobs_to_check(search_term_filter, page):
+        job_status = [
+            x[0]
+            for x in UserJobStatus.query.with_entities(
+                UserJobStatus.job_id).all()
+        ]
         if search_term_filter == 'All':
             return Jobs.query \
                         .outerjoin(UserJobStatus) \
@@ -111,7 +120,6 @@ class Jobs(db.Model):
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
-
     @staticmethod
     def get_unique_search_terms():
         return Jobs.query \
@@ -121,9 +129,11 @@ class Jobs(db.Model):
 
     @staticmethod
     def get_search_term_choices():
-        search_term_choices = [('All','All')]
-        search_term_choices.extend((x.search_term,x.search_term) for x in Jobs.get_unique_search_terms())
+        search_term_choices = [('All', 'All')]
+        search_term_choices.extend((x.search_term, x.search_term)
+                                   for x in Jobs.get_unique_search_terms())
         return search_term_choices
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -134,13 +144,16 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String)
     status = db.Column(db.Boolean, default=True)
     job_id = db.relationship('Jobs', backref='user', lazy='dynamic')
-    job_status = db.relationship('UserJobStatus', backref='user', lazy='dynamic')
-    search_terms = db.relationship('UserJobSearchCriteria', backref='user', lazy='dynamic')
-    search_location = db.relationship('UserJobSearchLocation', backref='user', lazy='dynamic')
-    search_engines = db.relationship('UserJobSearchEngines', backref='user', lazy='dynamic')
+    job_status = db.relationship(
+        'UserJobStatus', backref='user', lazy='dynamic')
+    search_terms = db.relationship(
+        'UserJobSearchCriteria', backref='user', lazy='dynamic')
+    search_location = db.relationship(
+        'UserJobSearchLocation', backref='user', lazy='dynamic')
+    search_engines = db.relationship(
+        'UserJobSearchEngines', backref='user', lazy='dynamic')
 
-
-    def __init__(self, name,username,email,password):
+    def __init__(self, name, username, email, password):
         self.name = name
         self.username = username
         self.email = email
@@ -192,11 +205,12 @@ class User(db.Model, UserMixin):
                     .get(int(userid))
 
     @staticmethod
-    def add_new_user(name,username,email,password):
-        new_user = User(name,username,email,password)
+    def add_new_user(name, username, email, password):
+        new_user = User(name, username, email, password)
         db.session.add(new_user)
         db.session.commit()
         return True
+
 
 class UserJobStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -206,7 +220,7 @@ class UserJobStatus(db.Model):
     status_changed = db.Column(db.DateTime, default=datetime.utcnow)
     rating = db.Column(db.Integer, default=0)
 
-    def __init__(self, user_id, job_id ,status = None):
+    def __init__(self, user_id, job_id, status=None):
         if status is None:
             self.user_id = user_id
             self.job_id = job_id
@@ -219,10 +233,10 @@ class UserJobStatus(db.Model):
         return "{}".format(self.status)
 
     @staticmethod
-    def change_status(job_id ,status):
+    def change_status(job_id, status):
         logged_user = User.get_id_by_username(current_user)
         for job in job_id:
-            job_status = UserJobStatus(logged_user,job,status)
+            job_status = UserJobStatus(logged_user, job, status)
             db.session.add(job_status)
         db.session.commit()
 
@@ -239,19 +253,20 @@ class UserJobStatus(db.Model):
                 pass
         db.session.commit()
 
+
 class UserJobSearchCriteria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     search_criteria = db.Column(db.String(40))
     exclude = db.Column(db.Boolean, default=False)
 
-    def __init__(self, user_id, search_criteria,exclude = None):
-            self.user_id = user_id
-            self.search_criteria = search_criteria
-            self.exclude = exclude
+    def __init__(self, user_id, search_criteria, exclude=None):
+        self.user_id = user_id
+        self.search_criteria = search_criteria
+        self.exclude = exclude
 
     def __repr__(self):
-        return "{%s,%s}".format(self.search_criteria,self.exclude)
+        return "{%s,%s}".format(self.search_criteria, self.exclude)
 
     @staticmethod
     def get_job_search_criteria():
@@ -261,11 +276,13 @@ class UserJobSearchCriteria(db.Model):
                                     .order_by(UserJobSearchCriteria.search_criteria)
 
     @staticmethod
-    def add_job_search_criteria(search_criteria, exclude = None):
+    def add_job_search_criteria(search_criteria, exclude=None):
         logged_user = User.get_id_by_username(current_user)
-        new_criteria = UserJobSearchCriteria(logged_user,search_criteria,exclude)
+        new_criteria = UserJobSearchCriteria(logged_user, search_criteria,
+                                             exclude)
         db.session.add(new_criteria)
         db.session.commit()
+
 
 class UserJobSearchLocation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -273,11 +290,12 @@ class UserJobSearchLocation(db.Model):
     search_location = db.Column(db.String(40))
 
     def __init__(self, user_id, search_location):
-            self.user_id = user_id
-            self.search_location = search_criteria
+        self.user_id = user_id
+        self.search_location = search_criteria
 
     def __repr__(self):
         return "{}".format(self.search_criteria)
+
 
 class UserJobSearchEngines(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -285,8 +303,8 @@ class UserJobSearchEngines(db.Model):
     search_engine = db.Column(db.String(40))
 
     def __init__(self, user_id, search_engine):
-            self.user_id = user_id
-            self.search_engine = search_engine
+        self.user_id = user_id
+        self.search_engine = search_engine
 
     def __repr__(self):
         return "{}".format(self.search_engine)

@@ -1,31 +1,25 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %} Serenity2 -- Jobs {% endblock %} {% block content %}
 
-{% block title %}
-Serenity2 -- Jobs
-{%  endblock %}
+<div class="container">
 
-{% block content %}
-	
-	<div class="container">
-
-      <div class="card card-login mx-auto mt-5">
-        <div class="card-header">
-          Login
-        </div>
-        <div class="card-body">
-          <form method="POST" action="/login">
-            {{ form.hidden_tag() }}
-			<p>{{ form.username.label }}</p> 
-			<p>{{ form.username }}</p>
-			<p>{{ form.password.label }} </p>
-			<p>{{ form.password }}</p>
-			<input class="btn btn-primary btn-block" type="submit" value="Login">
-          </form>
-          <div class="text-center">
-            <a class="d-block small mt-3" href="register.html">Register an Account</a>
-            <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
-          </div>
-        </div>
+  <div class="card card-login mx-auto mt-5">
+    <div class="card-header">
+      Login
+    </div>
+    <div class="card-body">
+      <form method="POST" action="/login">
+        {{ form.hidden_tag() }}
+        <p>{{ form.username.label }}</p>
+        <p>{{ form.username }}</p>
+        <p>{{ form.password.label }} </p>
+        <p>{{ form.password }}</p>
+        <input class="btn btn-primary btn-block" type="submit" value="Login">
+      </form>
+      <div class="text-center">
+        <a class="d-block small mt-3" href="register.html">Register an Account</a>
+        <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
       </div>
+    </div>
+  </div>
 
-{% endblock %}
+  {% endblock %}

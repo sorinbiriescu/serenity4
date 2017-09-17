@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-
 {% block content %}
 <form action="" method="post" name="user_job_search_profile">
     {{ form.hidden_tag() }}
     <p>{{ user.email }}</p>
     {% for criteria_item in criteria %}
     <div class="btn-group">
-    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     {{ criteria_item.search_criteria }}
         <span class="caret"></span>
     </button>
@@ -17,9 +16,9 @@
         </ul>
     </div>
 
-        <p>
+    <p>
 
-        </p>
+    </p>
     {% endfor %}
 
     <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
