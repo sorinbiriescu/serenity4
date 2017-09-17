@@ -35,12 +35,17 @@ class Jobs(db.Model):
 
     @staticmethod
     def get_jobs_all():
-    ''' Queries table Jobs for all entries. '''>
+        '''
+        Queries table Jobs for all entries.
+        '''
         return Jobs.query \
                     .order_by(desc(Jobs.date_first_added))
 
     @staticmethod
     def get_jobs_filtered(search_term_filter, page):
+        '''
+        Queries table Jobs for all entries with filters. 
+        '''
         if search_term_filter == 'All':
             return Jobs.query \
                         .order_by(desc(Jobs.date_first_added)) \
@@ -102,8 +107,8 @@ class Jobs(db.Model):
     @staticmethod
     def get_jobs_to_check(search_term_filter, page):
         job_status = [
-            x[0]
-            for x in UserJobStatus.query.with_entities(
+            item[0]
+            for item in UserJobStatus.query.with_entities(
                 UserJobStatus.job_id).all()
         ]
         if search_term_filter == 'All':
@@ -136,6 +141,9 @@ class Jobs(db.Model):
 
 
 class User(db.Model, UserMixin):
+    '''
+    User Table
+    '''
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     username = db.Column(db.String(80))
@@ -144,14 +152,10 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String)
     status = db.Column(db.Boolean, default=True)
     job_id = db.relationship('Jobs', backref='user', lazy='dynamic')
-    job_status = db.relationship(
-        'UserJobStatus', backref='user', lazy='dynamic')
-    search_terms = db.relationship(
-        'UserJobSearchCriteria', backref='user', lazy='dynamic')
-    search_location = db.relationship(
-        'UserJobSearchLocation', backref='user', lazy='dynamic')
-    search_engines = db.relationship(
-        'UserJobSearchEngines', backref='user', lazy='dynamic')
+    job_status = db.relationship('UserJobStatus', backref='user', lazy='dynamic')
+    search_terms = db.relationship('UserJobSearchCriteria', backref='user', lazy='dynamic')
+    search_location = db.relationship('UserJobSearchLocation', backref='user', lazy='dynamic')
+    search_engines = db.relationship('UserJobSearchEngines', backref='user', lazy='dynamic')
 
     def __init__(self, name, username, email, password):
         self.name = name
@@ -183,10 +187,13 @@ class User(db.Model, UserMixin):
 
     @staticmethod
     def get_id_by_username(username):
+        '''
+        Returns User.id if supplied with User.username
+        '''
         user = User.query \
                     .filter_by(username=str(username)) \
                     .first()
-        return user.id
+        return int(user.id)
 
     @property
     def password(self):
@@ -213,6 +220,9 @@ class User(db.Model, UserMixin):
 
 
 class UserJobStatus(db.Model):
+    '''
+    Table with user job statuses
+    '''
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
@@ -245,7 +255,8 @@ class UserJobStatus(db.Model):
         logged_user = User.get_id_by_username(current_user)
         for job in job_id:
             status = UserJobStatus.query \
-                                    .filter(and_(UserJobStatus.job_id == job,UserJobStatus.user_id == logged_user)) \
+                                    .filter(and_(UserJobStatus.job_id == job,
+                                                UserJobStatus.user_id == logged_user)) \
                                     .first()
             try:
                 db.session.delete(status)
@@ -278,9 +289,21 @@ class UserJobSearchCriteria(db.Model):
     @staticmethod
     def add_job_search_criteria(search_criteria, exclude=None):
         logged_user = User.get_id_by_username(current_user)
-        new_criteria = UserJobSearchCriteria(logged_user, search_criteria,
-                                             exclude)
+        new_criteria = UserJobSearchCriteria(logged_user, search_criteria, exclude)
         db.session.add(new_criteria)
+        db.session.commit()
+    
+    @staticmethod
+    def remove_job_search_criteria(search_criteria):
+        logged_user = User.get_id_by_username(current_user)
+        entry = UserJobSearchCriteria.query \
+                    .filter(and_(UserJobSearchCriteria.id == search_criteria,
+                                UserJobSearchCriteria.user_id == logged_user)) \
+                    .first()
+        try:
+            db.session.delete(entry)
+        except:
+            pass
         db.session.commit()
 
 

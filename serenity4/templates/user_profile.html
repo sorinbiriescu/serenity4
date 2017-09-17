@@ -1,28 +1,30 @@
-{% extends "base.html" %}
-{% block content %}
-<form action="" method="post" name="user_job_search_profile">
+{% extends "base.html" %} {% block content %}
+
+<p>{{ user.email }}</p>
+
+{% for criteria_item in criteria %}
+
+<form action="" method="post" name="user_job_search_profile.{{ criteria_item.id }}">
     {{ form.hidden_tag() }}
-    <p>{{ user.email }}</p>
-    {% for criteria_item in criteria %}
     <div class="btn-group">
         <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    {{ criteria_item.search_criteria }}
-        <span class="caret"></span>
+    {{criteria_item.search_criteria }} <span class="caret"></span>
     </button>
+        <input value="{{ criteria_item.id }}" type="hidden" name="user_profile_search_term">
         <ul class="dropdown-menu">
-            <li><a href="#">Test</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Delete</a></li>
+            <!--
+        <li><a href="#">Test</a></li>
+        <li role="separator" class="divider"></li>
+        -->
+            <li><input type="submit" class="btn btn-link" name="submit" value="Remove criteria"></li>
         </ul>
     </div>
+</form>
 
-    <p>
-
-    </p>
-    {% endfor %}
-
+{% endfor %}
+<p></p>
+<form action="" method="post" name="user_job_search_profile_input">
     <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
-
     <input type="submit" name="submit" value="Add criteria">
 </form>
 {% endblock %}

@@ -93,7 +93,7 @@ def jobs_not_interested(page=1):
                 try:
                     UserJobStatus.clear_status(
                         request.form.getlist("table_row_checkbox"))
-                except:
+                except Exception:
                     pass
                 UserJobStatus.change_status(
                     request.form.getlist("table_row_checkbox"),
@@ -128,7 +128,7 @@ def jobs_interested(page=1):
                 try:
                     UserJobStatus.clear_status(
                         request.form.getlist("table_row_checkbox"))
-                except:
+                except Exception:
                     pass
                 return render_template(
                     'jobs.html',
@@ -221,7 +221,7 @@ def jobs_to_check(page=1):
                 try:
                     UserJobStatus.clear_status(
                         request.form.getlist("table_row_checkbox"))
-                except:
+                except Exception:
                     pass
                 return render_template(
                     'jobs.html',
@@ -232,7 +232,7 @@ def jobs_to_check(page=1):
                 try:
                     UserJobStatus.clear_status(
                         request.form.getlist("table_row_checkbox"))
-                except:
+                except Exception:
                     pass
                 UserJobStatus.change_status(
                     request.form.getlist("table_row_checkbox"),
@@ -266,8 +266,21 @@ def user_profile(username):
             UserJobSearchCriteria.add_job_search_criteria(
                 form.job_search_criteria.data)
             criteria = UserJobSearchCriteria.get_job_search_criteria()
+            return redirect(url_for(
+                                'user_profile',
+                                username=username,
+                                criteria=criteria,
+                                user=user,
+                                form=form))
+        elif request.form['submit'] == 'Remove criteria':
+            UserJobSearchCriteria.remove_job_search_criteria(
+                request.form['user_profile_search_term'])
+            criteria = UserJobSearchCriteria.get_job_search_criteria()
             return render_template(
-                'user_profile.html', criteria=criteria, user=user, form=form)
+                        'user_profile.html',
+                        criteria=criteria,
+                        user=user,
+                        form=form)
         else:
             pass
     else:
