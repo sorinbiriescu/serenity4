@@ -256,7 +256,7 @@ class UserJobStatus(db.Model):
         for job in job_id:
             status = UserJobStatus.query \
                                     .filter(and_(UserJobStatus.job_id == job,
-                                                UserJobStatus.user_id == logged_user)) \
+                                                 UserJobStatus.user_id == logged_user)) \
                                     .first()
             try:
                 db.session.delete(status)
@@ -292,9 +292,15 @@ class UserJobSearchCriteria(db.Model):
         new_criteria = UserJobSearchCriteria(logged_user, search_criteria, exclude)
         db.session.add(new_criteria)
         db.session.commit()
-    
+
     @staticmethod
     def remove_job_search_criteria(search_criteria):
+        '''
+        remove_job _search_criteria(search_criteria)
+        ------
+        Removes a job search criteria from a user's UserJobSearchCriteria table.
+        Takes a criteria ID as an argument, get the current logged in user and remove the criteria.
+        '''
         logged_user = User.get_id_by_username(current_user)
         entry = UserJobSearchCriteria.query \
                     .filter(and_(UserJobSearchCriteria.id == search_criteria,
@@ -314,10 +320,43 @@ class UserJobSearchLocation(db.Model):
 
     def __init__(self, user_id, search_location):
         self.user_id = user_id
-        self.search_location = search_criteria
+        self.search_location = search_location
 
     def __repr__(self):
-        return "{}".format(self.search_criteria)
+        return "{}".format(self.search_location)
+
+    @staticmethod
+    def get_job_search_location():
+        logged_user = User.get_id_by_username(current_user)
+        return UserJobSearchLocation.query \
+                                    .filter(UserJobSearchLocation.user_id == logged_user) \
+                                    .order_by(UserJobSearchLocation.search_location)
+
+    @staticmethod
+    def add_job_search_location(search_location, exclude=None):
+        logged_user = User.get_id_by_username(current_user)
+        new_location = UserJobSearchLocation(logged_user, search_location)
+        db.session.add(new_location)
+        db.session.commit()
+
+    @staticmethod
+    def remove_job_search_location(search_location):
+        '''
+        remove_job _search_location(search_location)
+        ------
+        Removes a job search criteria from a user's UserJobSearchCriteria table.
+        Takes a location ID as an argument, gets the current logged in user and remove the criteria.
+        '''
+        logged_user = User.get_id_by_username(current_user)
+        entry = UserJobSearchLocation.query \
+                    .filter(and_(UserJobSearchLocation.id == search_location,
+                                UserJobSearchLocation.user_id == logged_user)) \
+                    .first()
+        try:
+            db.session.delete(entry)
+        except:
+            pass
+        db.session.commit()
 
 
 class UserJobSearchEngines(db.Model):

@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, login_required, logout_user
 
-from serenity4.models import Jobs, User, UserJobStatus, UserJobSearchCriteria
+from serenity4.models import Jobs, User, UserJobStatus, UserJobSearchCriteria, UserJobSearchLocation
 from serenity4.forms import FilterSearch, SignupForm, LoginForm, UserProfile
 
 from serenity4 import app, db, login_manager
@@ -9,6 +9,7 @@ from serenity4 import app, db, login_manager
 
 @app.route('/')
 @app.route('/index')
+@login_required
 def index():
     return render_template('index.html')
 
@@ -249,13 +250,14 @@ def jobs_to_check(page=1):
             'jobs.html', jobs=jobs, filter_text="All", form=form)
 
 
+@app.route('/user_dashboard')
 @app.route('/user_dashboard/<username>')
 @login_required
 def user_dashboard(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user_dashboard.html', user=user)
 
-
+@app.route('/user_profile')
 @app.route('/user_profile/<username>', methods=['GET', 'POST'])
 @login_required
 def user_profile(username):
@@ -266,27 +268,60 @@ def user_profile(username):
             UserJobSearchCriteria.add_job_search_criteria(
                 form.job_search_criteria.data)
             criteria = UserJobSearchCriteria.get_job_search_criteria()
+            location = UserJobSearchLocation.get_job_search_location()
             return redirect(url_for(
-                                'user_profile',
-                                username=username,
-                                criteria=criteria,
-                                user=user,
-                                form=form))
+                'user_profile',
+                username=username,
+                criteria=criteria,
+                location=location,
+                user=user,
+                form=form))
         elif request.form['submit'] == 'Remove criteria':
             UserJobSearchCriteria.remove_job_search_criteria(
                 request.form['user_profile_search_term'])
             criteria = UserJobSearchCriteria.get_job_search_criteria()
+            location = UserJobSearchLocation.get_job_search_location()
             return render_template(
-                        'user_profile.html',
-                        criteria=criteria,
-                        user=user,
-                        form=form)
+                'user_profile.html',
+                criteria=criteria,
+                location=location,
+                user=user,
+                form=form)
+        elif request.form['submit'] == 'Add location':
+            UserJobSearchLocation.add_job_search_location(
+                form.job_search_location.data)
+            criteria = UserJobSearchCriteria.get_job_search_criteria()
+            location = UserJobSearchLocation.get_job_search_location()
+            return redirect(url_for(
+                'user_profile',
+                username=username,
+                criteria=criteria,
+                location=location,
+                user=user,
+                form=form))
+        elif request.form['submit'] == 'Remove location':
+            UserJobSearchLocation.remove_job_search_location(
+                request.form['user_profile_search_term'])
+            criteria = UserJobSearchCriteria.get_job_search_criteria()
+            location = UserJobSearchLocation.get_job_search_location()
+            return render_template(
+                'user_profile.html',
+                criteria=criteria,
+                location=location,
+                user=user,
+                form=form)
+
         else:
             pass
     else:
         criteria = UserJobSearchCriteria.get_job_search_criteria()
+        location = UserJobSearchLocation.get_job_search_location()
         return render_template(
-            'user_profile.html', criteria=criteria, user=user, form=form)
+            'user_profile.html',
+            criteria=criteria,
+            location=location,
+            user=user,
+            form=form)
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -315,7 +350,7 @@ def login():
             #flash("Logged in successfully as {}.".format(user.username))
             return redirect(
                 request.args.get('next')
-                or url_for('user_profile', username=user.username))
+                or url_for('user_dashboard', username=user.username))
         #flash('Incorrect username or password.')
     return render_template("login.html", form=form)
 
