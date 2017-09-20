@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for
 from flask_login import login_user, login_required, logout_user
 
-from serenity4.models import Jobs, User, UserJobStatus, UserJobSearchCriteria, UserJobSearchLocation
+from serenity4.models import Jobs, User, UserJobStatus, UserJobSearchCriteria, UserJobSearchLocation, UserJobSearchEngine
 from serenity4.forms import FilterSearch, SignupForm, LoginForm, UserProfile
 
 from serenity4 import app, db, login_manager
@@ -210,7 +210,8 @@ def jobs_to_check(page=1):
     form = FilterSearch()
     if request.method == 'POST':
         jobs = Jobs.get_jobs_to_check(
-            search_term_filter=form.search_term.data, page=page)
+            search_term_filter=form.search_term.data,
+            page=page)
         if request.form['submit'] == 'Filter':
             return render_template(
                 'jobs.html',
@@ -263,65 +264,75 @@ def user_dashboard(username):
 def user_profile(username):
     form = UserProfile()
     user = User.query.filter_by(username=username).first_or_404()
+    criteria = UserJobSearchCriteria.get_job_search_criteria(exclude=False)
+    criteria_excluded = UserJobSearchCriteria.get_job_search_criteria(exclude=True)
+    location = UserJobSearchLocation.get_job_search_location()
+    engine = UserJobSearchEngine.get_job_search_engine()
+    content = {
+        'username':username,
+        'criteria':criteria,
+        'criteria_excluded':criteria_excluded,
+        'location':location,
+        'engine':engine,
+        'user':user,
+        'form':form
+        }
     if request.method == 'POST':
         if request.form['submit'] == 'Add criteria':
             UserJobSearchCriteria.add_job_search_criteria(
-                form.job_search_criteria.data)
-            criteria = UserJobSearchCriteria.get_job_search_criteria()
-            location = UserJobSearchLocation.get_job_search_location()
+                form.job_search_criteria.data, exclude=False)
             return redirect(url_for(
                 'user_profile',
-                username=username,
-                criteria=criteria,
-                location=location,
-                user=user,
-                form=form))
+                ** content))
         elif request.form['submit'] == 'Remove criteria':
             UserJobSearchCriteria.remove_job_search_criteria(
-                request.form['user_profile_search_term'])
-            criteria = UserJobSearchCriteria.get_job_search_criteria()
-            location = UserJobSearchLocation.get_job_search_location()
+                request.form['user_profile_search_term'], exclude=False)
             return render_template(
                 'user_profile.html',
-                criteria=criteria,
-                location=location,
-                user=user,
-                form=form)
+                ** content)
+        elif request.form['submit'] == 'Add excluded criteria':
+            UserJobSearchCriteria.add_job_search_criteria(
+                form.job_search_criteria.data, exclude=True)
+            return redirect(url_for(
+                'user_profile',
+                ** content))
+        elif request.form['submit'] == 'Remove excluded criteria':
+            UserJobSearchCriteria.remove_job_search_criteria(
+                request.form['user_profile_search_term_excluded'], exclude=True)
+            return render_template(
+                'user_profile.html',
+                ** content)
         elif request.form['submit'] == 'Add location':
             UserJobSearchLocation.add_job_search_location(
                 form.job_search_location.data)
-            criteria = UserJobSearchCriteria.get_job_search_criteria()
-            location = UserJobSearchLocation.get_job_search_location()
             return redirect(url_for(
                 'user_profile',
-                username=username,
-                criteria=criteria,
-                location=location,
-                user=user,
-                form=form))
+                ** content))
         elif request.form['submit'] == 'Remove location':
             UserJobSearchLocation.remove_job_search_location(
-                request.form['user_profile_search_term'])
-            criteria = UserJobSearchCriteria.get_job_search_criteria()
-            location = UserJobSearchLocation.get_job_search_location()
+                request.form['user_profile_search_location'])
             return render_template(
                 'user_profile.html',
-                criteria=criteria,
-                location=location,
-                user=user,
-                form=form)
+                ** content)
+        elif request.form['submit'] == 'Add engine':
+            UserJobSearchEngine.add_job_search_engine(
+                form.job_search_engine.data)
+            return redirect(url_for(
+                'user_profile',
+                ** content))
+        elif request.form['submit'] == 'Remove engine':
+            UserJobSearchEngine.remove_job_search_engine(
+                request.form['user_profile_search_engine'])
+            return render_template(
+                'user_profile.html',
+                ** content)
 
         else:
             pass
     else:
-        criteria = UserJobSearchCriteria.get_job_search_criteria()
-        location = UserJobSearchLocation.get_job_search_location()
         return render_template(
             'user_profile.html',
-            criteria=criteria,
-            location=location,
-            user=user,
-            form=form)
+            ** content)
 
 
 @app.route("/signup", methods=["GET", "POST"])

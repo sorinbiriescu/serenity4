@@ -1,56 +1,134 @@
 {% extends "base.html" %} {% block content %}
 
 <p>{{ user.email }}</p>
-
-{% for criteria_item in criteria %}
-
-<form action="" method="post" name="user_job_search_profile.{{ criteria_item.id }}">
-    {{ form.hidden_tag() }}
-    <div class="btn-group">
-        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    {{criteria_item.search_criteria }} <span class="caret"></span>
-    </button>
-        <input value="{{ criteria_item.id }}" type="hidden" name="user_profile_search_term">
-        <ul class="dropdown-menu">
-            <!--
-        <li><a href="#">Test</a></li>
-        <li role="separator" class="divider"></li>
-        -->
-            <li><input type="submit" class="btn btn-link" name="submit" value="Remove criteria"></li>
-        </ul>
-    </div>
-</form>
-
-{% endfor %}
 <p></p>
-<form action="" method="post" name="user_job_search_profile_input">
-    <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
-    <input type="submit" class="btn btn-success" name="submit" value="Add criteria">
-</form>
 
-{% for location_item in location %}
-
-<form action="" method="post" name="user_job_search_profile.{{ location_item.id }}">
-    {{ form.hidden_tag() }}
-    <div class="btn-group">
-        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    {{location_item.search_location }} <span class="caret"></span>
-    </button>
-        <input value="{{ location_item.id }}" type="hidden" name="user_profile_search_term">
-        <ul class="dropdown-menu">
-            <!--
-        <li><a href="#">Test</a></li>
-        <li role="separator" class="divider"></li>
-        -->
-            <li><input type="submit" class="btn btn-link" name="submit" value="Remove location"></li>
-        </ul>
+<div class="container" style="width:auto;">
+    <header style="width:auto;"></header>
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <form action="" method="post" name="user_job_search_criteria">
+            {{ form.hidden_tag() }}
+            <div class="well"><span>Search Criteria</span></div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    {% for criteria_item in criteria %}
+                    <div class="dropdown">
+                        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                        {{criteria_item.search_criteria }}
+                        <span class="caret"></span>
+                        </button>
+                        <input value="{{ criteria_item.id }}" type="hidden" name="user_profile_search_term">
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove criteria"></li>
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <p> </p>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
+                    <input type="submit" class="btn btn-success" name="submit" value="Add criteria">                    
+                </div>
+            </div>
+            </form>
+            <p> </p>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <form action="" method="post" name="user_job_search_criteria_exclude">
+            {{ form.hidden_tag() }}
+            <div class="well"><span>Excluded criteria</span></div>
+            <div class="row">
+                <div class="col-md-4">
+                    {% for criteria_excluded_item in criteria_excluded %}
+                    <div class="dropdown">
+                        <button class="btn btn-info dropdown-toggle visible-md-inline" data-toggle="dropdown" aria-expanded="false" type="button">
+                        {{criteria_excluded_item.search_criteria }}
+                        <span class="caret"></span>
+                        </button>
+                        <input value="{{ criteria_excluded_item.id }}" type="hidden" name="user_profile_search_term_excluded">
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove excluded criteria"></li>
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <p> </p>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
+                    <input type="submit" class="btn btn-success" name="submit" value="Add excluded criteria">                    
+                </div>
+            </div>
+            </form>
+            <p> </p>
+        </div>
     </div>
-</form>
+    <div class="row">
+        <div class="col-lg-6 col-md-6">
+            <form action="" method="post" name="user_job_search_location">
+            {{ form.hidden_tag() }}
+            <div class="well"><span>Locations </span></div>
+            <div class="row">
+                <div class="col-md-4">
+                    {% for location_item in location %}
+                    <div class="dropdown">
+                        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                            {{location_item.search_location }}
+                        <span class="caret"></span>
+                        </button>
+                        <input value="{{ location_item.id }}" type="hidden" name="user_profile_search_location">
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove location"></li>
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <p> </p>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>{{ form.job_search_location.label }} {{ form.job_search_location(size=20) }}</p>
+                    <input type="submit" class="btn btn-success" name="submit" value="Add location">
+                </div>
+            </div>
+            </form>
+            <p> </p>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <form action="" method="post" name="user_job_search_engine">
+                {{ form.hidden_tag() }}
+            <div class="well"><span>Search Engines</span></div>
+            <div class="row">
+                <div class="col-md-4">
+                    {% for engine_item in engine %}
+                    <div class="dropdown">
+                        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                        {{engine_item.search_engine }} 
+                        <span class="caret"></span>
+                        </button>
+                        <input value="{{ engine_item.id }}" type="hidden" name="user_profile_search_engine">
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove engine"></li>
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <p> </p>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>{{ form.job_search_engine.label }} {{ form.job_search_engine(size=20) }}</p>
+                    <input type="submit" class="btn btn-success" name="submit" value="Add engine">
+                </div>
+            </div>
+            </form>
+            <p> </p>
+        </div>
+    </div>
+</div>
 
-{% endfor %}
-<p></p>
-<form action="" method="post" name="user_job_search_profile_input">
-    <p>{{ form.job_search_location.label }} {{ form.job_search_location(size=20) }}</p>
-    <input type="submit" class="btn btn-success" name="submit" value="Add location">
-</form>
 {% endblock %}
