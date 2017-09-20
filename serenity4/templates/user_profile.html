@@ -8,61 +8,63 @@
     <div class="row">
         <div class="col-lg-6 col-md-6">
             <form action="" method="post" name="user_job_search_criteria">
-            {{ form.hidden_tag() }}
-            <div class="well"><span>Search Criteria</span></div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4">
-                    {% for criteria_item in criteria %}
-                    <div class="dropdown">
-                        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
-                        {{criteria_item.search_criteria }}
-                        <span class="caret"></span>
-                        </button>
-                        <input value="{{ criteria_item.id }}" type="hidden" name="user_profile_search_term">
-                        <ul class="dropdown-menu" role="menu">
-                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove criteria"></li>
-                        </ul>
+                {{ form.hidden_tag() }}
+                <div class="well"><span>Search Criteria</span></div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="btn-group">
+                            {% for criteria_item in criteria %}
+                            <div class="dropdown">
+                                <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                                {{criteria_item.search_criteria }}
+                                <span class="caret"></span>
+                                </button>
+                                <input value="{{ criteria_item.id }}" type="hidden" name="user_profile_search_term">
+                                <ul class="dropdown-menu" role="menu">
+                                    <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove criteria"></li>
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endfor %}
                 </div>
-            </div>
-            <p> </p>
-            <div class="row">
-                <div class="col-lg-4 col-md-4">
-                    <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
-                    <input type="submit" class="btn btn-success" name="submit" value="Add criteria">                    
+                <p> </p>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=40) }}</p>
+                        <input type="submit" class="btn btn-success" name="submit" value="Add criteria">
+                    </div>
                 </div>
-            </div>
             </form>
             <p> </p>
         </div>
         <div class="col-lg-6 col-md-6">
-            <form action="" method="post" name="user_job_search_criteria_exclude">
-            {{ form.hidden_tag() }}
-            <div class="well"><span>Excluded criteria</span></div>
-            <div class="row">
-                <div class="col-md-4">
-                    {% for criteria_excluded_item in criteria_excluded %}
-                    <div class="dropdown">
-                        <button class="btn btn-info dropdown-toggle visible-md-inline" data-toggle="dropdown" aria-expanded="false" type="button">
-                        {{criteria_excluded_item.search_criteria }}
+            <form action="" method="post" name="user_job_search_criteria">
+                {{ form.hidden_tag() }}
+                <div class="well"><span>Search Excluded Criteria</span></div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        {% for criteria_item in criteria_excluded %}
+                        <div class="dropdown">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                        {{criteria_item.search_criteria }}
                         <span class="caret"></span>
                         </button>
-                        <input value="{{ criteria_excluded_item.id }}" type="hidden" name="user_profile_search_term_excluded">
-                        <ul class="dropdown-menu" role="menu">
-                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove excluded criteria"></li>
-                        </ul>
+                            <input value="{{ criteria_item.id }}" type="hidden" name="user_profile_search_term_excluded">
+                            <ul class="dropdown-menu" role="menu">
+                                <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove excluded criteria"></li>
+                            </ul>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
-            </div>
-            <p> </p>
-            <div class="row">
-                <div class="col-md-4">
-                    <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=20) }}</p>
-                    <input type="submit" class="btn btn-success" name="submit" value="Add excluded criteria">                    
+                <p> </p>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <p>{{ form.job_search_criteria_exclude.label }} {{ form.job_search_criteria_exclude(size=40) }}</p>
+                        <input type="submit" class="btn btn-danger" name="submit" value="Add excluded criteria">
+                    </div>
                 </div>
-            </div>
             </form>
             <p> </p>
         </div>
@@ -70,61 +72,61 @@
     <div class="row">
         <div class="col-lg-6 col-md-6">
             <form action="" method="post" name="user_job_search_location">
-            {{ form.hidden_tag() }}
-            <div class="well"><span>Locations </span></div>
-            <div class="row">
-                <div class="col-md-4">
-                    {% for location_item in location %}
-                    <div class="dropdown">
-                        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                {{ form.hidden_tag() }}
+                <div class="well"><span>Locations </span></div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {% for location_item in location %}
+                        <div class="dropdown">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
                             {{location_item.search_location }}
                         <span class="caret"></span>
                         </button>
-                        <input value="{{ location_item.id }}" type="hidden" name="user_profile_search_location">
-                        <ul class="dropdown-menu" role="menu">
-                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove location"></li>
-                        </ul>
+                            <input value="{{ location_item.id }}" type="hidden" name="user_profile_search_location">
+                            <ul class="dropdown-menu" role="menu">
+                                <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove location"></li>
+                            </ul>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
-            </div>
-            <p> </p>
-            <div class="row">
-                <div class="col-md-4">
-                    <p>{{ form.job_search_location.label }} {{ form.job_search_location(size=20) }}</p>
-                    <input type="submit" class="btn btn-success" name="submit" value="Add location">
+                <p> </p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p>{{ form.job_search_location.label }} {{ form.job_search_location(size=40) }}</p>
+                        <input type="submit" class="btn btn-success" name="submit" value="Add location">
+                    </div>
                 </div>
-            </div>
             </form>
             <p> </p>
         </div>
         <div class="col-lg-6 col-md-6">
             <form action="" method="post" name="user_job_search_engine">
                 {{ form.hidden_tag() }}
-            <div class="well"><span>Search Engines</span></div>
-            <div class="row">
-                <div class="col-md-4">
-                    {% for engine_item in engine %}
-                    <div class="dropdown">
-                        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
+                <div class="well"><span>Search Engines</span></div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {% for engine_item in engine %}
+                        <div class="dropdown">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
                         {{engine_item.search_engine }} 
                         <span class="caret"></span>
                         </button>
-                        <input value="{{ engine_item.id }}" type="hidden" name="user_profile_search_engine">
-                        <ul class="dropdown-menu" role="menu">
-                            <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove engine"></li>
-                        </ul>
+                            <input value="{{ engine_item.id }}" type="hidden" name="user_profile_search_engine">
+                            <ul class="dropdown-menu" role="menu">
+                                <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove engine"></li>
+                            </ul>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
-            </div>
-            <p> </p>
-            <div class="row">
-                <div class="col-md-4">
-                    <p>{{ form.job_search_engine.label }} {{ form.job_search_engine(size=20) }}</p>
-                    <input type="submit" class="btn btn-success" name="submit" value="Add engine">
+                <p> </p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p>{{ form.job_search_engine.label }} {{ form.job_search_engine(size=40) }}</p>
+                        <input type="submit" class="btn btn-success" name="submit" value="Add engine">
+                    </div>
                 </div>
-            </div>
             </form>
             <p> </p>
         </div>

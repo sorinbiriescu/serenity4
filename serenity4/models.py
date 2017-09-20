@@ -271,13 +271,13 @@ class UserJobSearchCriteria(db.Model):
     search_criteria = db.Column(db.String(40))
     exclude = db.Column(db.Boolean, default=False)
 
-    def __init__(self, user_id, search_criteria, exclude=None):
+    def __init__(self, user_id, search_criteria, exclude):
         self.user_id = user_id
         self.search_criteria = search_criteria
         self.exclude = exclude
 
     def __repr__(self):
-        return "{%s,%s}".format(self.search_criteria, self.exclude)
+        return "{}".format(self.search_criteria)
 
     @staticmethod
     def get_job_search_criteria(exclude):
@@ -286,7 +286,6 @@ class UserJobSearchCriteria(db.Model):
                                     .filter(and_(UserJobSearchCriteria.user_id == logged_user,
                                                  UserJobSearchCriteria.exclude == exclude)) \
                                     .order_by(UserJobSearchCriteria.search_criteria) \
-                                    .all()
 
     @staticmethod
     def add_job_search_criteria(search_criteria, exclude):

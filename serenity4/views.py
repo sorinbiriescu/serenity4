@@ -287,21 +287,21 @@ def user_profile(username):
         elif request.form['submit'] == 'Remove criteria':
             UserJobSearchCriteria.remove_job_search_criteria(
                 request.form['user_profile_search_term'], exclude=False)
-            return render_template(
-                'user_profile.html',
-                ** content)
+            return redirect(url_for(
+                'user_profile',
+                ** content))
         elif request.form['submit'] == 'Add excluded criteria':
             UserJobSearchCriteria.add_job_search_criteria(
-                form.job_search_criteria.data, exclude=True)
+                form.job_search_criteria_exclude.data, exclude=True)
             return redirect(url_for(
                 'user_profile',
                 ** content))
         elif request.form['submit'] == 'Remove excluded criteria':
             UserJobSearchCriteria.remove_job_search_criteria(
                 request.form['user_profile_search_term_excluded'], exclude=True)
-            return render_template(
-                'user_profile.html',
-                ** content)
+            return redirect(url_for(
+                'user_profile',
+                ** content))
         elif request.form['submit'] == 'Add location':
             UserJobSearchLocation.add_job_search_location(
                 form.job_search_location.data)
@@ -311,9 +311,9 @@ def user_profile(username):
         elif request.form['submit'] == 'Remove location':
             UserJobSearchLocation.remove_job_search_location(
                 request.form['user_profile_search_location'])
-            return render_template(
-                'user_profile.html',
-                ** content)
+            return redirect(url_for(
+                'user_profile',
+                ** content))
         elif request.form['submit'] == 'Add engine':
             UserJobSearchEngine.add_job_search_engine(
                 form.job_search_engine.data)
@@ -323,9 +323,9 @@ def user_profile(username):
         elif request.form['submit'] == 'Remove engine':
             UserJobSearchEngine.remove_job_search_engine(
                 request.form['user_profile_search_engine'])
-            return render_template(
-                'user_profile.html',
-                ** content)
+            return redirect(url_for(
+                'user_profile',
+                ** content))
 
         else:
             pass

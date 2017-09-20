@@ -16,8 +16,8 @@ Re-factoring:
 Features to implement:
 
 **** Create user profile page:
-    - ability to enter search term, exclude search term, location
-    - tags with delete X button
+    - // ability to enter search term, exclude search term, location
+    - // tags with delete X button
     - location with autocomplete
     - find a way to provide progress report
     - find a way to show message that the script is still running

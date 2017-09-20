@@ -59,9 +59,8 @@
                   <th class="table_header">Company</th>
                   <th class="table_header">Location</th>
                   <th class="table_header">Short Description</th>
-                  <th class="table_header">Link</th>
-                  <th class="table_header">Search Term</th>
                   <th class="table_header">Source</th>
+                  <th class="table_header">Search Term</th>
                   <th class="table_header">Date Added</th>
                 </tr>
               </thead>
@@ -83,9 +82,8 @@
                         <td>{{ job.company }}</td>
                         <td>{{ job.location }}</td>
                         <td>{{ job.description }}</td>
-                        <td><a href="{{ job.link }}" target="_blank">Link</a></td>
+                        <td><a href="{{ job.link }}" target="_blank">{{ job.source }}</a></td>
                         <td>{{ job.search_term }}</td>
-                        <td>{{ job.source }}</td>
                         <td>{{ job.date_first_added }}</td>
 
                       </tr>
