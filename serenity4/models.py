@@ -369,7 +369,10 @@ class UserJobStatus(db.Model):
                                                         UserJobStatus.user_id == logged_user)) \
                                             .order_by(desc(UserJobStatus.status_changed)) \
                                             .first()
-        return last_job_update.status_changed.strftime('%d %b %Y')
+        if not last_job_update:
+            return None
+        else:
+            return last_job_update.status_changed.strftime('%d %b %Y')
 
 class UserJobSearchCriteria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
