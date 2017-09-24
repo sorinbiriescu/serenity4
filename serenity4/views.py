@@ -6,6 +6,9 @@ from serenity4.forms import FilterSearch, SignupForm, LoginForm, UserProfile
 
 from serenity4 import app, db, login_manager
 
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.get(int(userid))
 
 @app.route('/')
 @app.route('/index')
@@ -13,17 +16,38 @@ from serenity4 import app, db, login_manager
 def index():
     return render_template('index.html')
 
-
-@login_manager.user_loader
-def load_user(userid):
-    return User.query.get(int(userid))
-
-@app.route('/user_dashboard')
-@app.route('/user_dashboard/<username>')
+@app.route('/user_dashboard', methods=['GET', 'POST'])
+@app.route('/user_dashboard/<username>', methods=['GET', 'POST'])
 @login_required
 def user_dashboard(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user_dashboard.html', user=user)
+    total_jobs_applied = UserJobStatus.get_total_jobs_applied()
+    total_jobs_interested = UserJobStatus.get_total_jobs_interested()
+    last_applied_job_date = UserJobStatus.last_job_update()
+    total_jobs_to_check = Jobs.get_total_jobs_to_check()
+    user_job_search_terms = [item.__dict__['search_criteria'] for item in UserJobSearchCriteria.get_job_search_criteria(exclude=False).all()]
+    user_job_search_terms_excluded = [item.__dict__['search_criteria'] for item in UserJobSearchCriteria.get_job_search_criteria(exclude=True).all()]
+    user_job_search_location = [item.__dict__['search_location'] for item in UserJobSearchLocation.get_job_search_location().all()]
+    last_job_fetch = User.get_last_job_fetch()
+
+    content = {
+        'user':user,
+        'username' : username,
+        'total_jobs_applied' : total_jobs_applied,
+        'total_jobs_interested' : total_jobs_interested,
+        'last_applied_job_date' : last_applied_job_date,
+        'total_jobs_to_check' : total_jobs_to_check,
+        'user_job_search_terms' : user_job_search_terms,
+        'user_job_search_terms_excluded' : user_job_search_terms_excluded,
+        'user_job_search_location' : user_job_search_location,
+        'last_job_fetch' : last_job_fetch
+        }
+    if request.method == 'POST':
+        Jobs.get_new_jobs()
+        User.update_last_job_fetch()
+        return redirect(url_for('user_dashboard', ** content))
+
+    return render_template('user_dashboard.html', **content)
 
 
 @app.route('/jobs', methods=['GET', 'POST'])
@@ -34,13 +58,6 @@ def jobs(page=1):
     if request.method == 'POST':
         jobs = Jobs.get_jobs_filtered(form.search_term.data, page)
         if request.form['submit'] == 'Filter':
-            return render_template(
-                'jobs.html',
-                jobs=jobs,
-                filter_text=form.search_term.data,
-                form=form)
-        elif request.form['submit'] == 'Get jobs':
-            Jobs.get_new_jobs()
             return render_template(
                 'jobs.html',
                 jobs=jobs,
