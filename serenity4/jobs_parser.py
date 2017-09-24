@@ -49,14 +49,14 @@ class IndeedParser:
     **************
     Required attributes:
     -----
-    search_terms = List
-    search_terms_excluded = List
-    search_locations = List
-    result_limit = Integer
+    search_terms = List \n
+    search_terms_excluded = List \n
+    search_locations = List \n
+    result_limit = Integer \n
     ****** ********
     Methods:
     -----
-    format_query(self, query)
+    format_query(self, query) \n
     send_request(self, search_term, search_term_exclude, location, start)
     '''
     def __init__(self, **kwargs):
@@ -141,13 +141,3 @@ class IndeedParser:
 
         time.sleep(randint(0, 9))
         return job_list
-
-arguments = {
-    'search_terms':['marketing assistant', 'marketing manager'],
-    'search_terms_excluded': ['stage'],
-    'search_locations': ['Lyon', 'Grenoble'],
-    'result_limit': 20
-    }
-tester = IndeedParser(**arguments).parse_queries()
-for entry in tester:
-    print(entry)

@@ -7,6 +7,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from serenity4 import app, db, login_manager, JOBS_PER_PAGE
+from serenity4.jobs_parser import JobElement, IndeedParser
 
 manager = Manager(app)
 migrate = Migrate(app, db)
@@ -44,7 +45,7 @@ class Jobs(db.Model):
     @staticmethod
     def get_jobs_filtered(search_term_filter, page):
         '''
-        Queries table Jobs for all entries with filters. 
+        Queries table Jobs for all entries with filters.
         '''
         if search_term_filter == 'All':
             return Jobs.query \
@@ -138,6 +139,48 @@ class Jobs(db.Model):
         search_term_choices.extend((x.search_term, x.search_term)
                                    for x in Jobs.get_unique_search_terms())
         return search_term_choices
+
+    @staticmethod
+    def get_new_jobs():
+        logged_user = User.get_id_by_username(current_user)
+        search_terms = [item.__dict__['search_criteria'] for item in UserJobSearchCriteria.get_job_search_criteria(exclude=False).all()]
+        search_terms_excluded = [item.__dict__['search_criteria'] for item in UserJobSearchCriteria.get_job_search_criteria(exclude=True).all()]
+        search_locations = [item.__dict__['search_location'] for item in UserJobSearchLocation.get_job_search_location().all()]
+        arguments = {
+            'search_terms':search_terms,
+            'search_terms_excluded': search_terms_excluded,
+            'search_locations': search_locations,
+            'result_limit': 20
+            }
+        job_results = IndeedParser(**arguments).parse_queries()
+
+        for entry in job_results:
+            if not Jobs.query \
+                        .filter(and_(Jobs.title == entry.title,\
+                                Jobs.description == entry.description,\
+                                Jobs.user_id == logged_user)) \
+                        .first():
+
+                db.session \
+                    .add(Jobs( \
+                        title=entry.title, \
+                        company=entry.company, \
+                        location=entry.location, \
+                        description=entry.description, \
+                        link=entry.link, \
+                        search_term=(entry.search_term).replace("+", " ").title(), \
+                        source=entry.source, \
+                        user_id=logged_user))
+
+            else:
+                duplicate = Jobs.query \
+                                .filter(and_(Jobs.title == entry.title, \
+                                            Jobs.description == entry.description, \
+                                            Jobs.user_id == logged_user)) \
+                                .first()
+                duplicate.discovery_count += 1
+                duplicate.last_date_found = datetime.utcnow()
+            db.session.commit()
 
 
 class User(db.Model, UserMixin):
@@ -277,7 +320,7 @@ class UserJobSearchCriteria(db.Model):
         self.exclude = exclude
 
     def __repr__(self):
-        return "{}".format(self.search_criteria)
+        return "'%s'" % (self.search_criteria)
 
     @staticmethod
     def get_job_search_criteria(exclude):
@@ -352,7 +395,7 @@ class UserJobSearchLocation(db.Model):
         logged_user = User.get_id_by_username(current_user)
         entry = UserJobSearchLocation.query \
                     .filter(and_(UserJobSearchLocation.id == search_location,
-                                UserJobSearchLocation.user_id == logged_user)) \
+                                 UserJobSearchLocation.user_id == logged_user)) \
                     .first()
         try:
             db.session.delete(entry)

@@ -32,6 +32,13 @@ def jobs(page=1):
                 jobs=jobs,
                 filter_text=form.search_term.data,
                 form=form)
+        elif request.form['submit'] == 'Get jobs':
+            Jobs.get_new_jobs()
+            return render_template(
+                'jobs.html',
+                jobs=jobs,
+                filter_text=form.search_term.data,
+                form=form)
         else:
             if form.table_item_action.data == 'Clear status':
                 try:
