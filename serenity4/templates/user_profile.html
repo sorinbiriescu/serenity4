@@ -7,13 +7,14 @@
     <header style="width:auto;"></header>
     <div class="row">
         <div class="col-lg-6 col-md-6">
-            <form action="" method="post" name="user_job_search_criteria">
+            
                 {{ form.hidden_tag() }}
                 <div class="well"><span>Search Criteria</span></div>
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
                         <div class="btn-group">
                             {% for criteria_item in criteria %}
+                            <form action="" method="post" name="user_job_search_criteria">
                             <div class="dropdown">
                                 <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
                                 {{criteria_item.search_criteria }}
@@ -24,11 +25,13 @@
                                     <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove criteria"></li>
                                 </ul>
                             </div>
+                            </form>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
                 <p> </p>
+            <form action="" method="post" name="user_job_search_criteria_submit">
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
                         <p>{{ form.job_search_criteria.label }} {{ form.job_search_criteria(size=40) }}</p>
@@ -39,12 +42,13 @@
             <p> </p>
         </div>
         <div class="col-lg-6 col-md-6">
-            <form action="" method="post" name="user_job_search_criteria">
+            
                 {{ form.hidden_tag() }}
                 <div class="well"><span>Search Excluded Criteria</span></div>
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
                         {% for criteria_item in criteria_excluded %}
+                        <form action="" method="post" name="user_job_search_criteria">
                         <div class="dropdown">
                             <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
                         {{criteria_item.search_criteria }}
@@ -55,10 +59,12 @@
                                 <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove excluded criteria"></li>
                             </ul>
                         </div>
+                        </form>
                         {% endfor %}
                     </div>
                 </div>
                 <p> </p>
+            <form action="" method="post" name="user_job_search_criteria_submit">
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
                         <p>{{ form.job_search_criteria_exclude.label }} {{ form.job_search_criteria_exclude(size=40) }}</p>
@@ -71,12 +77,13 @@
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-6">
-            <form action="" method="post" name="user_job_search_location">
+            
                 {{ form.hidden_tag() }}
                 <div class="well"><span>Locations </span></div>
                 <div class="row">
                     <div class="col-md-4">
                         {% for location_item in location %}
+                        <form action="" method="post" name="user_job_search_location">
                         <div class="dropdown">
                             <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">
                             {{location_item.search_location }}
@@ -87,10 +94,12 @@
                                 <li role="presentation"><input type="submit" class="btn btn-link" name="submit" value="Remove location"></li>
                             </ul>
                         </div>
+                        </form>
                         {% endfor %}
                     </div>
                 </div>
                 <p> </p>
+            <form action="" method="post" name="user_job_search_location">
                 <div class="row">
                     <div class="col-md-4">
                         <p>{{ form.job_search_location.label }} {{ form.job_search_location(size=40) }}</p>
