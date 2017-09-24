@@ -1,8 +1,90 @@
 {% extends "base.html" %} 
 {% block content %}
-<header>
-    <h1>{{ user.email }}</h1>
-
-</header>
+<body>
+    <div style="width:auto;">
+        <div class="container" style="width:auto;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Welcome, {{ user.name }} </h1></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="well">
+                        <h3>Summary </h3>
+                        <p>So far, you have applied for <a href="{{ url_for('jobs_applied') }}"><strong>{{ total_jobs_applied }}</strong></a> jobs.</p>
+                        <p>Last time you applied for a job was on: {{ last_applied_job_date }} </p>
+                        <p>Jobs to check out: <a href="{{ url_for('jobs_to_check') }}"><strong>{{ total_jobs_to_check }}</strong></a></p>
+                        <p>Jobs interested in: <a href="{{ url_for('jobs_interested') }}"><strong>{{ total_jobs_interested }}</strong></a> </p>
+                    </div>
+                    <div class="well">
+                        <h3>You are looking for:</h3>
+                        <p> {% if user_job_search_terms %}
+                                {% for term in user_job_search_terms %}
+                                    {{ term }}
+                                    {{ "," if not loop.last }}
+                                {% endfor %}
+                            {% else %}
+                                nothing.
+                            {% endif %}
+                        </p>
+                        <p><strong>without</strong> :</p>
+                        <p>
+                            {% if user_job_search_terms_excluded %}
+                                {% for term in user_job_search_terms_excluded %}
+                                    {{ term }}
+                                    {{ "," if not loop.last }}
+                                {% endfor %}
+                            {% else %}
+                                nothing.
+                            {% endif %}
+                        </p>
+                        <p><strong>in:</strong> </p>
+                        <p>
+                            {% if user_job_search_location %}
+                                {% for term in user_job_search_location %}
+                                    {{ term }}
+                                    {{ "," if not loop.last }}
+                                {% endfor %}
+                            {% else %}
+                                nothing.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="well">
+                                <h3>Last update</h3>
+                                <span>
+                                    {% if last_job_fetch %}
+                                        {{ last_job_fetch }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-success" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <span><p>To get new jobs, click on the "Get new jobs" button below.</p>
+                                    <p>Note: It may take a few minutes to get the results, depending on
+                                        how many search terms do you have.</p>
+                                </span></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="" method="post" name="get_new_jobs">
+                            <button class="btn btn-success btn-block btn-lg" type="submit" value="Get jobs">Get new jobs</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 
 {% endblock %}

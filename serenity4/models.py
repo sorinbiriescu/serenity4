@@ -125,6 +125,22 @@ class Jobs(db.Model):
                                      UserJobStatus.status.is_(None))) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
+    
+    @staticmethod
+    def get_total_jobs_to_check():
+        job_status = [
+            item[0]
+            for item in UserJobStatus.query.with_entities(
+                UserJobStatus.job_id).all()
+        ]
+        logged_user = User.get_id_by_username(current_user)
+        total_jobs_to_check = Jobs.query \
+                                    .outerjoin(UserJobStatus) \
+                                    .filter(and_(UserJobStatus.status.is_(None),
+                                                Jobs.user_id == logged_user)) \
+                                    .count()
+        
+        return total_jobs_to_check
 
     @staticmethod
     def get_unique_search_terms():
@@ -194,6 +210,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80))
     password_hash = db.Column(db.String)
     status = db.Column(db.Boolean, default=True)
+    last_job_fetch = db.Column(db.DateTime, default=datetime.utcnow)
     job_id = db.relationship('Jobs', backref='user', lazy='dynamic')
     job_status = db.relationship('UserJobStatus', backref='user', lazy='dynamic')
     search_terms = db.relationship('UserJobSearchCriteria', backref='user', lazy='dynamic')
@@ -261,6 +278,24 @@ class User(db.Model, UserMixin):
         db.session.commit()
         return True
 
+    @staticmethod
+    def get_last_job_fetch():
+        logged_user = User.get_id_by_username(current_user)
+        date_last_fetch = User.query \
+                                .filter(User.id == logged_user) \
+                                .first()
+        return date_last_fetch.last_job_fetch.strftime('%d %b %Y %H:%M')
+
+    @staticmethod
+    def update_last_job_fetch():
+        logged_user = User.get_id_by_username(current_user)
+        date_last_fetch = User.query \
+                                .filter(User.id == logged_user) \
+                                .first()
+        date_last_fetch.last_job_fetch = datetime.utcnow()
+        db.session.commit()
+        return date_last_fetch.last_job_fetch.strftime('%d %b %Y %H:%M')
+
 
 class UserJobStatus(db.Model):
     '''
@@ -297,7 +332,7 @@ class UserJobStatus(db.Model):
     def clear_status(job_id):
         logged_user = User.get_id_by_username(current_user)
         for job in job_id:
-            status = UserJobStatus.querymanager \
+            status = UserJobStatus.query \
                                     .filter(and_(UserJobStatus.job_id == job,
                                                  UserJobStatus.user_id == logged_user)) \
                                     .first()
@@ -307,6 +342,34 @@ class UserJobStatus(db.Model):
                 pass
         db.session.commit()
 
+    @staticmethod
+    def get_total_jobs_applied():
+        logged_user = User.get_id_by_username(current_user)
+        total_jobs_applied = UserJobStatus.query \
+                                            .filter(and_(UserJobStatus.status == 'Applied',
+                                                        UserJobStatus.user_id == logged_user)) \
+                                            .count()
+        return total_jobs_applied
+
+    @staticmethod
+    def get_total_jobs_interested():
+        logged_user = User.get_id_by_username(current_user)
+        total_jobs_interested = UserJobStatus.query \
+                                            .filter(and_(UserJobStatus.status == 'Interested',
+                                                        UserJobStatus.user_id == logged_user)) \
+                                            .count()
+        return total_jobs_interested
+
+    @staticmethod
+    def last_job_update():
+        logged_user = User.get_id_by_username(current_user)
+        last_job_update = UserJobStatus.query \
+                                            .with_entities(UserJobStatus.status_changed) \
+                                            .filter(and_(UserJobStatus.status == 'Applied',
+                                                        UserJobStatus.user_id == logged_user)) \
+                                            .order_by(desc(UserJobStatus.status_changed)) \
+                                            .first()
+        return last_job_update.status_changed.strftime('%d %b %Y')
 
 class UserJobSearchCriteria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
