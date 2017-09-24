@@ -18,6 +18,13 @@ def index():
 def load_user(userid):
     return User.query.get(int(userid))
 
+@app.route('/user_dashboard')
+@app.route('/user_dashboard/<username>')
+@login_required
+def user_dashboard(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user_dashboard.html', user=user)
+
 
 @app.route('/jobs', methods=['GET', 'POST'])
 @app.route('/jobs/<int:page>', methods=['GET', 'POST'])
@@ -256,14 +263,6 @@ def jobs_to_check(page=1):
         jobs = Jobs.get_jobs_to_check(search_term_filter="All", page=page)
         return render_template(
             'jobs.html', jobs=jobs, filter_text="All", form=form)
-
-
-@app.route('/user_dashboard')
-@app.route('/user_dashboard/<username>')
-@login_required
-def user_dashboard(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user_dashboard.html', user=user)
 
 @app.route('/user_profile')
 @app.route('/user_profile/<username>', methods=['GET', 'POST'])
