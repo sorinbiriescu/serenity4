@@ -366,7 +366,7 @@ class UserJobStatus(db.Model):
         last_job_update = UserJobStatus.query \
                                             .with_entities(UserJobStatus.status_changed) \
                                             .filter(and_(UserJobStatus.status == 'Applied',
-                                                        UserJobStatus.user_id == logged_user)) \
+                                                         UserJobStatus.user_id == logged_user)) \
                                             .order_by(desc(UserJobStatus.status_changed)) \
                                             .first()
         if not last_job_update:
