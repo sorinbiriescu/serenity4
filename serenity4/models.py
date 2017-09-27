@@ -47,92 +47,98 @@ class Jobs(db.Model):
         '''
         Queries table Jobs for all entries with filters.
         '''
+        logged_user = User.get_id_by_username(current_user)
         if search_term_filter == 'All':
             return Jobs.query \
+                        .filter(Jobs.user_id == logged_user) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
         else:
             return Jobs.query \
-                        .filter(Jobs.search_term == search_term_filter) \
+                        .filter(and_(Jobs.search_term == search_term_filter, \
+                                    Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
     def get_jobs_not_interested(search_term_filter, page):
+        logged_user = User.get_id_by_username(current_user)
         if search_term_filter == 'All':
             return Jobs.query \
                         .join(UserJobStatus) \
-                        .filter(UserJobStatus.status == "Not Interested") \
+                        .filter(and_(UserJobStatus.status == "Not Interested", \
+                                    Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
         else:
             return Jobs.query \
                         .join(UserJobStatus) \
                         .filter(and_(Jobs.search_term == search_term_filter, \
-                                     UserJobStatus.status == "Not Interested")) \
+                                     UserJobStatus.status == "Not Interested", \
+                                     Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
     def get_jobs_interested(search_term_filter, page):
+        logged_user = User.get_id_by_username(current_user)
         if search_term_filter == 'All':
             return Jobs.query \
                         .join(UserJobStatus) \
-                        .filter(UserJobStatus.status == "Interested") \
+                        .filter(and_(UserJobStatus.status == "Interested", \
+                                    Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
         else:
             return Jobs.query \
                         .join(UserJobStatus) \
                         .filter(and_(Jobs.search_term == search_term_filter, \
-                                     UserJobStatus.status == "Interested")) \
+                                     UserJobStatus.status == "Interested", \
+                                     Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
     def get_jobs_applied(search_term_filter, page):
+        logged_user = User.get_id_by_username(current_user)
         if search_term_filter == 'All':
             return Jobs.query \
                         .join(UserJobStatus) \
-                        .filter(UserJobStatus.status == "Applied") \
+                        .filter(and_(UserJobStatus.status == "Applied", \
+                                    Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
         else:
             return Jobs.query \
                         .join(UserJobStatus) \
                         .filter(and_(Jobs.search_term == search_term_filter, \
-                                     UserJobStatus.status == "Applied")) \
+                                     UserJobStatus.status == "Applied", \
+                                     Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
 
     @staticmethod
     def get_jobs_to_check(search_term_filter, page):
-        job_status = [
-            item[0]
-            for item in UserJobStatus.query.with_entities(
-                UserJobStatus.job_id).all()
-        ]
+        logged_user = User.get_id_by_username(current_user)
         if search_term_filter == 'All':
             return Jobs.query \
                         .outerjoin(UserJobStatus) \
-                        .filter(UserJobStatus.status.is_(None)) \
+                        .filter(and_(UserJobStatus.status.is_(None),
+                                    Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
         else:
             return Jobs.query \
                         .outerjoin(UserJobStatus) \
                         .filter(and_(Jobs.search_term == search_term_filter, \
-                                     UserJobStatus.status.is_(None))) \
+                                     UserJobStatus.status.is_(None), \
+                                     Jobs.user_id == logged_user)) \
                         .order_by(desc(Jobs.date_first_added)) \
                         .paginate(page, JOBS_PER_PAGE, False)
     
     @staticmethod
     def get_total_jobs_to_check():
-        job_status = [
-            item[0]
-            for item in UserJobStatus.query.with_entities(
-                UserJobStatus.job_id).all()
-        ]
+
         logged_user = User.get_id_by_username(current_user)
         total_jobs_to_check = Jobs.query \
                                     .outerjoin(UserJobStatus) \
