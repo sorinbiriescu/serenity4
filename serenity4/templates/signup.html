@@ -1,19 +1,87 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block title %}
-Serenity2 -- Jobs
-{%  endblock %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+        <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+        <!-- MetisMenu CSS -->
+        <link href="../static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    
+        <!-- Custom CSS -->
+        <link href="../static/dist/css/sb-admin-2.css" rel="stylesheet">
+    
+        <!-- Morris Charts CSS -->
+        <link href="../static/vendor/morrisjs/morris.css" rel="stylesheet">
+    
+        <!-- Custom Fonts -->
+        <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
 
-{% block content %}
-<article>
-    <form action="" method="post" name="signup">
-        {{ form.hidden_tag() }}
-        <p>{{ form.name.label }} {{ form.name(size=20) }}</p>
-        <p>{{ form.username.label }} {{ form.username(size=20) }}</p>
-        <p>{{ form.email.label }} {{ form.email(size=20) }}</p>
-        <p>{{ form.password.label }} {{ form.password(size=20) }}</p>
-        <input type="submit" value="Signup">
-    </form>
+<body style="width:auto;height:auto;">
+    <div>
+        <div class="container">
+            <div class="row" style="width:auto;height:120px;"></div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <div class="well well-lg" style="background-size:auto;">
+                        <h1 class="text-center">
+                            <i class="fa fa-user-plus" style="width:auto;height:auto;font-size:72px;"></i></h1>
+                        <h1 class="text-center">Signup</h1>
+                        <form action="" method="post" name="signup">
+                            {{ form.hidden_tag() }}
+                            <div class="row">
+                                <div class="col-md-12">
+                                        {{ form.name (class_="form-control", placeholder="Name")}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                        {{ form.username (class_="form-control", placeholder="Username")}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                        {{ form.email (class_="form-control", placeholder="email")}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                        {{ form.password (class_="form-control", placeholder="Password") }}
+                                </div>
+                            </div>
+                            <p> </p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-success btn-block btn-lg" name="submit" type="submit">Signup </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery -->
+    <script src="../static/vendor/jquery/jquery.min.js"></script>
+    
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-</article>
-{% endblock %}
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../static/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../static/vendor/raphael/raphael.min.js"></script>
+    <script src="../static/vendor/morrisjs/morris.min.js"></script>
+    <script src="../static/data/morris-data.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/dist/js/sb-admin-2.js"></script>
+</body>
+
+</html>
