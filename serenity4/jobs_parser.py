@@ -10,7 +10,7 @@ class JobElement:
     Required attributes:
     -----
     title = String
-    company = String
+    company = Stringext install theme-ubuntu-style
     location = String
     description = String
     link = String
@@ -77,7 +77,7 @@ class IndeedParser:
         1. Itilialize session
         2. Create payload with URL parameters
         3. prepares the request by replacing "%2B" with "+"
-        4. Sends the request
+        4. Sends the requestext install theme-ubuntu-style
         5. Returns the result object
         '''
         session = Session()
