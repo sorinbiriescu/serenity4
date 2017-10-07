@@ -172,7 +172,7 @@ class Jobs(db.Model):
             'search_terms':search_terms,
             'search_terms_excluded': search_terms_excluded,
             'search_locations': search_locations,
-            'result_limit': 20
+            'result_limit': 40
             }
         job_results = IndeedParser(**arguments).parse_queries()
 
