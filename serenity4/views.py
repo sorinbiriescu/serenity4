@@ -291,12 +291,14 @@ def user_profile(username):
     criteria_excluded = UserJobSearchCriteria.get_job_search_criteria(exclude=True)
     location = UserJobSearchLocation.get_job_search_location()
     engine = UserJobSearchEngine.get_job_search_engine()
+    default_engines = ['Indeed.fr', 'Linkedin.fr']
     content = {
         'username':username,
         'criteria':criteria,
         'criteria_excluded':criteria_excluded,
         'location':location,
         'engine':engine,
+        'default_engines': default_engines,
         'user':user,
         'form':form
         }
@@ -337,9 +339,9 @@ def user_profile(username):
             return redirect(url_for(
                 'user_profile',
                 ** content))
-        elif request.form['submit'] == 'Add engine':
+        elif request.form['submit'] in default_engines:
             UserJobSearchEngine.add_job_search_engine(
-                form.job_search_engine.data)
+                request.form['user_profile_search_engine'])
             return redirect(url_for(
                 'user_profile',
                 ** content))
