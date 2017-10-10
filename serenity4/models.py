@@ -7,7 +7,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from serenity4 import app, db, login_manager, JOBS_PER_PAGE
-from serenity4.jobs_parser import JobElement, IndeedParser
+from serenity4.job_parser import JobsFetch
 
 manager = Manager(app)
 migrate = Migrate(app, db)
@@ -168,13 +168,14 @@ class Jobs(db.Model):
         search_terms = [item.__dict__['search_criteria'] for item in UserJobSearchCriteria.get_job_search_criteria(exclude=False).all()]
         search_terms_excluded = [item.__dict__['search_criteria'] for item in UserJobSearchCriteria.get_job_search_criteria(exclude=True).all()]
         search_locations = [item.__dict__['search_location'] for item in UserJobSearchLocation.get_job_search_location().all()]
+        search_engines = [item.__dict__['search_engine'] for item in UserJobSearchEngine.get_job_search_engine().all()]
         arguments = {
             'search_terms':search_terms,
             'search_terms_excluded': search_terms_excluded,
             'search_locations': search_locations,
-            'result_limit': 40
+            'search_engines': search_engines
             }
-        job_results = IndeedParser(**arguments).parse_queries()
+        job_results = JobsFetch(**arguments).results()
 
         for entry in job_results:
             if not Jobs.query \

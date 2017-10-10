@@ -2,6 +2,7 @@ tester.py
 archive/
 TODO.txt
 config.py
+tester.py
 
 #DBs
 *.db
