@@ -1,10 +1,12 @@
-from flask import render_template, request, redirect, url_for
-from flask_login import login_user, login_required, logout_user
-
-from serenity4.models import Jobs, User, UserJobStatus, UserJobSearchCriteria, UserJobSearchLocation, UserJobSearchEngine
-from serenity4.forms import FilterSearch, SignupForm, LoginForm, UserProfile
+from flask import redirect, render_template, request, url_for
+from flask_login import login_required, login_user, logout_user
 
 from serenity4 import app, db, login_manager
+from serenity4.forms import FilterSearch, LoginForm, SignupForm, UserProfile
+from serenity4.models import (Jobs, User, UserJobSearchCriteria,
+                              UserJobSearchEngine, UserJobSearchLocation,
+                              UserJobStatus)
+
 
 @login_manager.user_loader
 def load_user(userid):

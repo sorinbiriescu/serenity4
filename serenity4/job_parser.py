@@ -1,7 +1,10 @@
 import time
 from random import randint
+
 from lxml import html
 from requests import Request, Session
+
+JOBS_PER_PAGE = 50
 
 class JobsFetch:
     
@@ -11,6 +14,7 @@ class JobsFetch:
         self.search_terms_excluded = search_terms_excluded
         self.search_locations = search_locations
         self.search_engines = search_engines
+        self.result_limit = JOBS_PER_PAGE
         self.job_list = []
 
     def run_parsers(self):
@@ -21,7 +25,8 @@ class JobsFetch:
             instance = self.parsers[site](
                 self.search_terms,
                 self.search_terms_excluded,
-                self.search_locations
+                self.search_locations,
+                self.result_limit
                 )
             [self.job_list.append(job) for job in instance.results()]
 
@@ -48,12 +53,12 @@ class Job:
 
 class JobParser:
 
-    def __init__(self,search_terms,search_terms_excluded,search_locations):
+    def __init__(self,search_terms,search_terms_excluded,search_locations,result_limit):
 
         self.search_terms = search_terms
         self.search_terms_excluded = search_terms_excluded
         self.search_locations = search_locations
-        self.result_limit = 50
+        self.result_limit = result_limit
 
     def format_query(self, query):
         '''Prepares the query by replacing spaces with + symbol'''
@@ -198,6 +203,6 @@ object = JobsFetch(
                 search_terms = ['Marketing'],
                 search_terms_excluded = ['test'],
                 search_locations = ['Lyon'],
-                search_engines = ['Linkedin.fr']
+                search_engines = ['Indeed.fr']
                 ).results()
 print(object[0])

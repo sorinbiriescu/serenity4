@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from sqlalchemy import desc, and_, or_
 from flask_login import UserMixin, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
+from sqlalchemy import and_, desc, or_
+from werkzeug.security import check_password_hash, generate_password_hash
 
-from serenity4 import app, db, login_manager, JOBS_PER_PAGE
+from serenity4 import app, db, login_manager
 from serenity4.job_parser import JobsFetch
 
 manager = Manager(app)
