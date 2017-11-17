@@ -3,8 +3,7 @@ from random import randint
 
 from lxml import html
 from requests import Request, Session
-
-JOBS_PER_PAGE = 50
+from config import jobs_per_page
 
 class JobsFetch:
     
@@ -14,7 +13,7 @@ class JobsFetch:
         self.search_terms_excluded = search_terms_excluded
         self.search_locations = search_locations
         self.search_engines = search_engines
-        self.result_limit = JOBS_PER_PAGE
+        self.result_limit = jobs_per_page
         self.job_list = []
 
     def run_parsers(self):
@@ -199,10 +198,70 @@ class LinkedinScraper (JobParser):
 
                 yield job_entry
 
-object = JobsFetch(
-                search_terms = ['Marketing'],
-                search_terms_excluded = ['test'],
-                search_locations = ['Lyon'],
-                search_engines = ['Indeed.fr']
-                ).results()
-print(object[0])
+class GlassdoorScraper (JobParser):
+    
+    def __init__(self, search_terms, search_terms_excluded, search_locations,result_limit):
+        super().__init__(search_terms, search_terms_excluded, search_locations,result_limit)
+
+    def send_request(self, search_term, search_term_exclude, location, start):
+        ''' Prepares and sends the request
+        '''
+        session = Session()
+        payload = {
+            'keywords': search_term,
+            'location': location,
+            'start': start
+        }
+        request = Request('GET', 'https://www.linkedin.com/jobs/search/', params=payload)
+        prepared_req = request.prepare()
+        prepared_req.url = (prepared_req.url).replace("%2B", "+")
+        page = session.send(prepared_req)
+
+        return page
+
+    def get_jobs(self):
+        ''' Parses queries passed to it.
+        '''
+        compiled_search_term = self.format_query(self.search_terms)
+        compiled_search_term_exclude = '+-'.join(self.format_query(self.search_terms_excluded))
+
+        for search_term in compiled_search_term:
+            for location in self.search_locations:
+                for result_batch in range(0, self.result_limit, 25):
+                    request = self.send_request(
+                        search_term=search_term,
+                        search_term_exclude=compiled_search_term_exclude,
+                        location=location,
+                        start=result_batch)
+
+                    yield request, search_term
+
+    
+    def results(self):
+        
+        for request, search_term in self.get_jobs():
+
+            tree = html.fromstring(request.content)
+            results = tree.xpath('//li[@class="job-listing"]')
+
+            for element in results:
+                job_title = element.xpath('normalize-space(.//span[@class="job-title-text"/text())')
+                company = element.xpath('normalize-space(.//span[@class="company-name-text"]/text())')
+                location = element.xpath('normalize-space(.//span[@class="job-location"]/text())')
+                description = element.xpath('normalize-space(.//span[@class="job-description"]/text())')
+                link = element.xpath('.//a[@class="job-title-link"]/@href')
+                source = "LinkedIn"
+                search_term = search_term
+
+                job_entry = Job(
+                    title=job_title[0],
+                    company=company,
+                    location=location[0],
+                    description=description,
+                    link=link,
+                    search_term=search_term,
+                    source=source)
+
+                yield job_entry
+
+#

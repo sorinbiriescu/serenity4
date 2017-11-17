@@ -6,7 +6,7 @@ from serenity4.forms import FilterSearch, LoginForm, SignupForm, UserProfile
 from serenity4.models import (Jobs, User, UserJobSearchCriteria,
                               UserJobSearchEngine, UserJobSearchLocation,
                               UserJobStatus)
-
+from config import default_engines
 
 @login_manager.user_loader
 def load_user(userid):
@@ -293,7 +293,7 @@ def user_profile(username):
     criteria_excluded = UserJobSearchCriteria.get_job_search_criteria(exclude=True)
     location = UserJobSearchLocation.get_job_search_location()
     engine = UserJobSearchEngine.get_job_search_engine()
-    default_engines = ['Indeed.fr', 'Linkedin.fr']
+    
     content = {
         'username':username,
         'criteria':criteria,

@@ -19,3 +19,13 @@ def test_LinkedinParser():
                 search_engines = ['Linkedin.fr']
                 ).results()
     assert len(query) > 0
+
+def test_FranceEmploiParser():
+    pytest.xfail('FranceEmploi parser not installed')
+    query = JobsFetch(
+                search_terms = ['Marketing'],
+                search_terms_excluded = ['test'],
+                search_locations = ['Lyon'],
+                search_engines = ['Linkedin.fr']
+                ).results()
+    assert len(query) > 0

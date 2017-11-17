@@ -8,3 +8,8 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir,
                                                       'db/SERENITY4.db')
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+jobs_per_page = 50
+
+default_engines = ['Indeed.fr',
+                'Linkedin.fr']
